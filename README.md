@@ -19,7 +19,7 @@ Sound interaction further animates the installation: fallen petals remain on the
 |---|---|
 | Guanghan Li | User Input |
 | Jiayi Hou | Time-based |
-| Fabiana | Audio |
+| Fabiana Fonseca | Audio |
 | Chunyu Zhao | Perlin Noise and Randomness |
 
 ### User Input Mechanic
@@ -38,7 +38,7 @@ Each flower also develops through timed animation instead of appearing instantly
 
 ### Audio Mechanic
 
-PASTE AUDIO DESCRIPTION HERE.
+Once the tree has hit the point of its natural growth cycle where it begins to initially bloom flowers (or in which the user hovers over branches), petals will begin to appear on the ground preemptively. In similar techniques utilized by DJs or audio-visualizers, these petals will bounce in a wave-like formation responsive to the audio input of the user (i.e. confetti bouncing on a speaker playing bass-heavy music). This introduces movement back into the fallen petals, representative of new life. This mechanic also demonstrates a more seemingly passive form of interaction that reflects the natural growth of this piece. 
 
 ### Perlin Noise and Randomness Mechanic
 
