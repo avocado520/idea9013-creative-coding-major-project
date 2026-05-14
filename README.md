@@ -17,10 +17,10 @@ Sound interaction further animates the installation: fallen petals remain on the
 
 | Team Member | Mechanic |
 |---|---|
-| Name | User Input |
+| Guanghan Li | User Input |
 | Jiayi | Time-based |
-| Name | Audio |
-| Name | Perlin Noise and Randomness |
+| Fabiana | Audio |
+| Chunyu Zhao | Perlin Noise and Randomness |
 
 ### User Input Mechanic
 
