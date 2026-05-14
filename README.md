@@ -6,7 +6,7 @@ For our final project, we plan to create an original piece that explores growth 
 
 After the tree fully forms, scattered flowers will begin to bloom and fall gently, encouraging user interaction. When users hover their mouse over branches, additional flowers in that will area blossom. Once fully bloomed, mouse clicks will trigger the flowers to gradually wither and shed their petals. Once landing on the ground, the movement of these petals will then become reactive to the relative audio levels inputted, bouncing rhymically and reminiscent of sound waves.
 
-Through these layered interactions, the project visualizes the fragile cycle between life, beauty, and impermanence.  
+Through these layered interactions, the project visualizes the fragile cycle between life, beauty, and impermanence.
 ### Inspiration 1: OpenProcessing Generative Tree Reference
 ![Tree Inspiration](assets/tree-reference.png)
 ### Inspiration 2: Falling Flower Motion Reference
