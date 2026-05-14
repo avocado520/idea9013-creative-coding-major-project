@@ -1,11 +1,12 @@
 # Interactive Blooming Tree Installation
 
 ## Part 1: Project Direction
-Our interactive installation explores growth, bloom, and decay through a responsive digital tree. Inspired by the generative tree structure from the [OpenProcessing Tree Project](https://openprocessing.org/@u382178/1942905) and the falling flower visuals from the [Pinterest Falling Flowers Reference](https://uk.pinterest.com/pin/337347828359231168/), we create a dark immersive environment where a tree slowly grows across the screen.
+For our final project, we plan to create an original piece that explores growth and decay through a responsive digital tree. Inspired by the generative tree structure of the [OpenProcessing Tree Project](https://openprocessing.org/@u382178/1942905) and the falling flower visuals of [Pinterest Falling Flowers Reference](https://uk.pinterest.com/pin/337347828359231168/), we aim to create a visually contrasting and colorful environment where a tree slowly grows across the screen, emulating the style as seen below:
+![Visual Style Inspiration](assets/StyleInspo.png)
 
-After the tree fully forms, scattered flowers begin to bloom and fall gently, encouraging user interaction. When users hover their mouse over branches, flowers in that area blossom dynamically. Once fully bloomed, mouse clicks trigger the flowers to gradually wither and shed petals.
+After the tree fully forms, scattered flowers will begin to bloom and fall gently, encouraging user interaction. When users hover their mouse over branches, additional flowers in that will area blossom. Once fully bloomed, mouse clicks will trigger the flowers to gradually wither and shed their petals. Once landing on the ground, the movement of these petals will then become reactive to the relative audio levels inputted, bouncing rhymically and reminiscent of sound waves.
 
-Sound interaction further animates the installation: fallen petals remain on the ground and react to surrounding audio, bouncing rhythmically with the beat. Through these layered interactions, the project visualizes the fragile cycle between life, beauty, and impermanence.  
+Through these layered interactions, the project visualizes the fragile cycle between life, beauty, and impermanence.  
 ### Inspiration 1: OpenProcessing Generative Tree Reference
 ![Tree Inspiration](assets/tree-reference.png)
 ### Inspiration 2: Falling Flower Motion Reference
@@ -42,7 +43,7 @@ Once the tree has hit the point of its natural growth cycle where it begins to i
 
 ### Perlin Noise and Randomness Mechanic
 
-I was responsible for implementing Perlin noise and random effects. My work included designing animations for flowers blooming and dynamic effects for falling petals, in which the falling petals rotate while their colors transition naturally through a gradient effect based on Perlin noise. I also utilized random motion algorithms to develop subtle swaying movements for the trees, creating a more lifelike and realistic visual effect. These systems give the installation a dynamic, responsive, and ever-evolving quality, rather than a mechanical repetition.
+I am responsible for implementing Perlin noise and random effects. My work includes designing animations for flowers blooming and dynamic effects for falling petals, in which the falling petals will rotate while their colors transition naturally through a random gradient effect based on Perlin noise. I will also utilize random motion algorithms to develop subtle swaying movements for the tree, creating a more lifelike and realistic visual effect. These systems give the installation a dynamic, responsive, and ever-evolving quality, rather than a mechanical repetition.
 
 ## Part 3: Putting It Together
 
