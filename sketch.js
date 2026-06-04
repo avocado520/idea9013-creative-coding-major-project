@@ -1,80 +1,37 @@
-//We need a variable to hold our image
-let img;
+// sketch.js
+// This file works as the main controller of the sketch.
+// It creates the shared Tree object and calls its update and display methods each frame.
+// The detailed tree structure and branch behaviour are defined in tree.js.
 
-//We will divide the image into segments
-let numSegments = 50;
-
-//We will store the segments in an array
-let segments = [];
-
-//lets add a variable to switch between drawing the image and the segments
-let drawSegments = true;
-
-//lets load the image from disk
-function preload() {
-  img = loadImage('/assets/Mona_Lisa_by_Leonardo_da_Vinci_500_x_700.jpg');
-}
+let tree;
 
 function setup() {
-  //We will make the canvas the same size as the image using its properties
-  createCanvas(img.width, img.height);
-  //We can use the width and height of the image to calculate the size of each segment
-  let segmentWidth = img.width / numSegments;
-  let segmentHeight = img.height / numSegments;
-  /*
-  Divide the original image into segments, we are going to use nested loops
-  */
+  createCanvas(windowWidth, windowHeight);
 
-  for (let segYPos=0; segYPos<img.height; segYPos+=segmentHeight) {
-    //this is looping over the height
-    for (let segXPos=0; segXPos<img.width; segXPos+=segmentWidth) {
-      //We will use the x and y position to get the colour of the pixel from the image
-      //lets take it from the centre of the segment
-      let segmentColour = img.get(segXPos + segmentWidth / 2, segYPos + segmentHeight / 2);
-       let segment = new ImageSegment(segXPos,segYPos,segmentWidth,segmentHeight,segmentColour);
-       segments.push(segment);
-    }
-  }
+  // Create the tree at the bottom centre of the canvas.
+  // The y position is set close to the canvas height so the trunk grows upward from the bottom edge.
+  tree = new Tree(width / 2, height - 5);
+
+  // Rounded stroke caps make branch ends look softer and more organic.
+  strokeCap(ROUND);
 }
 
 function draw() {
-  background(0);
-  if (drawSegments) {
-    //lets draw the segments to the canvas
-    for (const segment of segments) {
-      segment.draw();
-    }
-  } else {
-    //lets draw the image to the canvas
-    image(img, 0, 0);
-  }
-}
-function keyPressed() {
-  if (key == " ") {
-    //this is a neat trick to invert a boolean variable,
-    //it will always make it the opposite of what it was
-    drawSegments = !drawSegments;
-  }
+  background(20, 24, 30);
+
+  // Update the tree's growth animation before drawing it.
+  // This allows branches and leaves to gradually appear over time.
+  tree.update();
+
+  // Draw the current state of the tree after all growth values have been updated.
+  tree.display();
 }
 
 
-//Here is our class for the image segments, we start with the class keyword
-class ImageSegment {
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 
-  constructor(srcImgSegXPosInPrm,srcImgSegYPosInPrm,srcImgSegWidthInPrm,srcImgSegHeightInPrm,srcImgSegColourInPrm) {
-    //these parameters are used to set the internal properties of an instance of the segment
-    //These parameters are named as imageSource as they are derived from the image we are using
-    this.srcImgSegXPos = srcImgSegXPosInPrm;
-    this.srcImgSegYPos = srcImgSegYPosInPrm;
-    this.srcImgSegWidth = srcImgSegWidthInPrm;
-    this.srcImgSegHeight = srcImgSegHeightInPrm;
-    this.srcImgSegColour = srcImgSegColourInPrm;
-  }
-
-  draw() {
-    //lets draw the segment to the canvas, for now we will draw it as an empty rectangle so we can see it
-    stroke(0);
-    fill(this.srcImgSegColour);
-    rect(this.srcImgSegXPos, this.srcImgSegYPos, this.srcImgSegWidth, this.srcImgSegHeight);
-  }
+  // Recreate the tree after resizing so the root remains aligned with the new canvas size.
+  // Without this, the tree could appear in the wrong position after the window changes.
+  tree = new Tree(width / 2, height - 5);
 }
