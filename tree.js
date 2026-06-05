@@ -5,7 +5,7 @@ let minX, maxX, minY, maxY;
 let leafImage;
 
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(windowWidth, windowHeight);
   angleMode(RADIANS);
 
   leafImage = createLeafImage();
@@ -40,7 +40,7 @@ function createNewTree() {
   // the ground level is set at height - 50 to ensure the tree starts growing from the ground
   let groundY = height - 50; 
 
-  tree = new Branch(null, width / 2, groundY, PI, 110);
+  tree = new Branch(null, width / 2, groundY, PI, height*0.18);
 
   let xSize = maxX - minX;
   let ySize = maxY - minY;
@@ -48,18 +48,18 @@ function createNewTree() {
   let scaleValue = 1;
 
   if (xSize > ySize) {
-    if (xSize > 500) {
-      scaleValue = 500 / xSize;
+    if (xSize > width*0.9) {
+      scaleValue = (width * 0.9) / xSize;
     }
   } else {
-    if (ySize > 480) { 
-      scaleValue = 480 / ySize;
+    if (ySize > height*0.9) { 
+      scaleValue = (height * 0.9) / ySize;
     }
   }
 
   tree.setScale(scaleValue);
 
-  tree.x = width / 2 - (xSize / 2) * scaleValue + (tree.x - minX) * scaleValue;
+  tree.x = width / 2;
   tree.y = groundY;
 }
 
