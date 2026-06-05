@@ -1,345 +1,247 @@
-// This file defines the shared tree system for the project.
-// It focuses only on the tree structure, branch growth, and leaf growth.
-// Time, input, audio, and randomness mechanics should be handled in separate files.
 
-class Tree {
-  constructor(x, y) {
-    // The root position of the tree.
-    // In sketch.js, this is placed near the bottom centre of the canvas.
+let windAngle = 0;
+let minX, maxX, minY, maxY;
+
+let leafImage;
+
+function setup() {
+  createCanvas(600, 600);
+  angleMode(RADIANS);
+
+  leafImage = createLeafImage();
+
+  createNewTree();
+}
+
+function draw() {
+  
+  background(215); 
+
+  fill(160); 
+  noStroke();
+  rect(0, height - 50, width, 50);
+
+  windAngle += 0.003;
+
+  tree.windForce = sin(windAngle) * 0.02;
+
+  tree.update();
+  tree.render();
+}
+
+function createNewTree() {
+  
+
+  minX = width / 2;
+  maxX = width / 2;
+  minY = height;
+  maxY = height;
+
+  // the ground level is set at height - 50 to ensure the tree starts growing from the ground
+  let groundY = height - 50; 
+
+  tree = new Branch(null, width / 2, groundY, PI, 110);
+
+  let xSize = maxX - minX;
+  let ySize = maxY - minY;
+
+  let scaleValue = 1;
+
+  if (xSize > ySize) {
+    if (xSize > 500) {
+      scaleValue = 500 / xSize;
+    }
+  } else {
+    if (ySize > 480) { 
+      scaleValue = 480 / ySize;
+    }
+  }
+
+  tree.setScale(scaleValue);
+
+  tree.x = width / 2 - (xSize / 2) * scaleValue + (tree.x - minX) * scaleValue;
+  tree.y = groundY;
+}
+
+function createLeafImage() {
+  let buffer = createGraphics(12, 18);
+
+  buffer.clear();
+
+  buffer.stroke(93, 104, 0);
+  buffer.line(6, 0, 6, 6);
+
+  buffer.noStroke();
+
+  buffer.fill(116, 150, 0);
+  buffer.beginShape();
+  buffer.vertex(6, 6);
+  buffer.bezierVertex(0, 12, 0, 12, 6, 18);
+  buffer.bezierVertex(12, 12, 12, 12, 6, 6);
+  buffer.endShape();
+
+  buffer.fill(139, 184, 0);
+  buffer.beginShape();
+  buffer.vertex(6, 9);
+  buffer.bezierVertex(0, 13, 0, 13, 6, 18);
+  buffer.bezierVertex(12, 13, 12, 13, 6, 9);
+  buffer.endShape();
+
+  buffer.stroke(101, 144, 0);
+  buffer.noFill();
+  buffer.bezier(6, 9, 5, 11, 5, 12, 6, 15);
+
+  return buffer;
+}
+
+class Branch {
+  constructor(parent, x, y, angleOffset, length) {
+    this.parent = parent;
+
     this.x = x;
     this.y = y;
 
-    // Store all branches in one array so other mechanics can access them later.
-    this.branches = [];
+    this.angle = 0;
+    this.angleOffset = angleOffset;
 
-    // Flowers and petals are part of the full tree system,
-    // but their detailed behaviour should be defined in flower.js and petal.js later.
-    this.flowers = [];
-    this.petals = [];
+    this.length = length;
 
-    // Controls how fast the tree grows.
-    // This can later be changed by timeMechanic.js.
-    this.growthSpeed = 0.012;
-
-    // Shared wind value.
-    // randomMechanic.js can later update this to create natural branch movement.
+    this.growth = 0;
     this.windForce = 0;
+    this.blastForce = 0;
 
-    // This becomes true when every branch has finished growing.
-    // Other mechanics can use this to decide when flowers should appear.
-    this.isFullyGrown = false;
+    this.branchA = null;
+    this.branchB = null;
 
-    this.createTree();
+    if (this.parent !== null) {
+      this.angle = this.parent.angle + angleOffset;
+      this.angleOffset = angleOffset;
+    } else {
+      this.angle = angleOffset;
+      this.angleOffset = -0.2 + random(0.4);
+    }
+
+    let xB = this.x + sin(this.angle) * this.length;
+    let yB = this.y + cos(this.angle) * this.length;
+
+    if (this.length > 10) {
+      if (this.length + random(this.length * 10) > 30) {
+        this.branchA = new Branch(
+          this,
+          xB,
+          yB,
+          -0.1 - random(0.4) + ((this.angle % TWO_PI) > PI ? -1 / this.length : 1 / this.length),
+          this.length * (0.6 + random(0.3))
+        );
+      }
+
+      if (this.length + random(this.length * 10) > 30) {
+        this.branchB = new Branch(
+          this,
+          xB,
+          yB,
+          0.1 + random(0.4) + ((this.angle % TWO_PI) > PI ? -1 / this.length : 1 / this.length),
+          this.length * (0.6 + random(0.3))
+        );
+      }
+
+      if (this.branchB !== null && this.branchA === null) {
+        this.branchA = this.branchB;
+        this.branchB = null;
+      }
+    }
+
+    minX = min(xB, minX);
+    maxX = max(xB, maxX);
+    minY = min(yB, minY);
+    maxY = max(yB, maxY);
   }
 
-  createTree() {
-    // The trunk length is based on the window height so the tree scales better.
-    // min() prevents the trunk from becoming too large on very tall screens.
-    let trunkLength = min(height * 0.32, 230);
+  setScale(scaleValue) {
+    this.length *= scaleValue;
 
-    // -HALF_PI makes the trunk grow upwards in p5.js.
-    let trunk = new Branch(null, this.x, this.y, -HALF_PI, trunkLength);
+    if (this.branchA !== null) {
+      this.branchA.setScale(scaleValue);
 
-    this.branches.push(trunk);
-
-    // Generate the recursive branch structure.
-    // Depth controls how many branch levels the tree has.
-    this.generateBranches(trunk, 4);
-  }
-
-  generateBranches(parentBranch, depth) {
-    // Stop recursion when the target branch depth is reached.
-    if (depth <= 0) return;
-
-    // Longer parent branches produce slightly longer child branches.
-    // This helps keep the tree shape balanced.
-    let leftBranch = parentBranch.addChild(
-      -random(0.35, 0.75),
-      random(0.62, 0.8)
-    );
-
-    let rightBranch = parentBranch.addChild(
-      random(0.35, 0.75),
-      random(0.62, 0.8)
-    );
-
-    this.branches.push(leftBranch);
-    this.branches.push(rightBranch);
-
-    // Continue creating smaller branches from both child branches.
-    this.generateBranches(leftBranch, depth - 1);
-    this.generateBranches(rightBranch, depth - 1);
+      if (this.branchB !== null) {
+        this.branchB.setScale(scaleValue);
+      }
+    }
   }
 
   update() {
-    // Only update the root branch directly.
-    // The root branch then recursively updates all child branches.
-    // This avoids updating the same child branch multiple times.
-    for (let branch of this.branches) {
-      if (branch.parent === null) {
-        branch.update(this.growthSpeed, this.windForce);
+    if (this.parent !== null) {
+      this.x = this.parent.x + sin(this.parent.angle) * this.parent.length * this.parent.growth;
+      this.y = this.parent.y + cos(this.parent.angle) * this.parent.length * this.parent.growth;
+
+      this.windForce = this.parent.windForce * (1.0 + 5.0 / this.length) + this.blastForce;
+
+      this.blastForce = (this.blastForce + sin(this.x / 2 + windAngle) * 0.005 / this.length) * 0.98;
+
+      this.angle = this.parent.angle + this.angleOffset + this.windForce + this.blastForce;
+
+      this.growth = min(this.growth + 0.1 * this.parent.growth, 1);
+    } else {
+      this.growth = min(this.growth + 0.1, 1);
+    }
+
+    if (this.branchA !== null) {
+      this.branchA.update();
+
+      if (this.branchB !== null) {
+        this.branchB.update();
       }
     }
-
-    // Check whether every branch has completed its growth animation.
-    this.isFullyGrown = this.branches.every(branch => branch.growth >= 1);
-
-    // These loops are kept here because flowers and petals belong visually to the tree.
-    // Their creation and special interactions will be controlled by separate mechanic files.
-    for (let flower of this.flowers) {
-      flower.update();
-    }
-
-    for (let petal of this.petals) {
-      petal.update();
-    }
   }
 
-  display() {
-    // Draw branches first so leaves, flowers, and petals can appear on top.
-    for (let branch of this.branches) {
-      if (branch.parent === null) {
-        branch.display();
+  render() {
+    if (this.branchA !== null) {
+      let xB = this.x;
+      let yB = this.y;
+
+      if (this.parent !== null) {
+        xB += (this.x - this.parent.x) * 0.4;
+        yB += (this.y - this.parent.y) * 0.4;
+      } else {
+        xB += sin(this.angle + this.angleOffset) * this.length * 0.3;
+        yB += cos(this.angle + this.angleOffset) * this.length * 0.3;
       }
+
+      let branchColor = floor(1100 / this.length);
+
+      stroke(branchColor);
+      strokeWeight(this.length / 5);
+      strokeCap(ROUND);
+      noFill();
+
+      bezier(
+        this.x,
+        this.y,
+        xB,
+        yB,
+        xB,
+        yB,
+        this.branchA.x,
+        this.branchA.y
+      );
+
+      this.branchA.render();
+
+      if (this.branchB !== null) {
+        this.branchB.render();
+      }
+    } else {
+      push();
+      translate(this.x, this.y);
+      rotate(-this.angle);
+      image(leafImage, -leafImage.width / 2, 0);
+      pop();
     }
-
-    for (let flower of this.flowers) {
-      flower.display();
-    }
-
-    for (let petal of this.petals) {
-      petal.display();
-    }
-  }
-
-  addFlower(x, y) {
-    // This method is an interface for other mechanics.
-    // For example, inputMechanic.js can call this when the user hovers near a branch.
-    this.flowers.push(new Flower(x, y));
-  }
-
-  addFlowerOnRandomBranch() {
-    // This method can be used by timeMechanic.js to create flowers over time.
-    let availableBranches = this.getAvailableBranches();
-
-    if (availableBranches.length === 0) return;
-
-    let branch = random(availableBranches);
-
-    this.addFlower(branch.getCurrentEndX(), branch.getCurrentEndY());
-  }
-
-  breakFlowerIntoPetals(flower) {
-    // Replace a complete flower with individual petals.
-    // This keeps the flower stage and petal stage clearly separated.
-    for (let i = 0; i < 8; i++) {
-      this.petals.push(new Petal(flower.x, flower.y));
-    }
-
-    let index = this.flowers.indexOf(flower);
-
-    if (index !== -1) {
-      this.flowers.splice(index, 1);
-    }
-  }
-
-  setGrowthSpeed(value) {
-    // Gives timeMechanic.js a controlled way to adjust tree growth speed.
-    this.growthSpeed = value;
-  }
-
-  setWindForce(value) {
-    // Gives randomMechanic.js a controlled way to apply natural swaying.
-    this.windForce = value;
-  }
-
-  getAvailableBranches() {
-    // Return branches that are grown enough for interaction or flower placement.
-    // This prevents flowers from appearing on invisible or unfinished branches.
-    return this.branches.filter(branch => branch.growth > 0.85);
   }
 }
 
-
-class Branch {
-  constructor(parent, x, y, angle, length) {
-    // The parent branch connects this branch to the tree hierarchy.
-    // The trunk has no parent, so its parent value is null.
-    this.parent = parent;
-
-    // Starting position of the branch.
-    this.x = x;
-    this.y = y;
-
-    // Base direction and length of the branch.
-    this.angle = angle;
-    this.length = length;
-
-    // Growth controls how much of the branch is currently visible.
-    // 0 means not visible yet, 1 means fully grown.
-    this.growth = 0;
-
-    // Leaf growth is separate from branch growth.
-    // This lets leaves appear only after the branch has finished growing.
-    this.leafGrowth = 0;
-
-    // Child branches are stored here so the tree can be updated and drawn recursively.
-    this.children = [];
-
-    // Each terminal branch gets slightly different leaf details.
-    // This avoids every leaf looking exactly the same.
-    this.leafSize = random(10, 18);
-    this.leafAngleOffset = random(-0.8, 0.8);
-
-    // Store the current animated angle.
-    // This allows wind movement to affect the branch direction later.
-    this.currentAngle = this.angle;
-
-    // The full target end position of the branch.
-    this.endX = this.x + cos(this.currentAngle) * this.length;
-    this.endY = this.y + sin(this.currentAngle) * this.length;
-  }
-
-  addChild(angleOffset, lengthScale) {
-    // A child branch starts from the full target end of its parent.
-    // During animation, update() will attach it to the parent's current visible end.
-    let child = new Branch(
-      this,
-      this.endX,
-      this.endY,
-      this.angle + angleOffset,
-      this.length * lengthScale
-    );
-
-    this.children.push(child);
-    return child;
-  }
-
-  update(growthSpeed, windForce) {
-    // Child branches should not start growing until the parent branch has mostly appeared.
-    // This creates a clearer bottom-to-top growth sequence.
-    let canGrow = this.parent === null || this.parent.growth > 0.65;
-
-    if (canGrow) {
-      this.growth = min(this.growth + growthSpeed, 1);
-    }
-
-    if (this.parent !== null) {
-      // Attach child branches to the current visible end of the parent.
-      // This keeps the branch system connected during the growth animation.
-      this.x = this.parent.getCurrentEndX();
-      this.y = this.parent.getCurrentEndY();
-    }
-
-    // Smaller branches move more than the trunk.
-    // This makes future wind or Perlin noise feel more natural.
-    let windStrength = map(this.length, 20, 230, 1.5, 0.15, true);
-    this.currentAngle = this.angle + windForce * windStrength;
-
-    // Recalculate the target end point after applying the animated angle.
-    this.endX = this.x + cos(this.currentAngle) * this.length;
-    this.endY = this.y + sin(this.currentAngle) * this.length;
-
-    // Leaves start growing after the terminal branch is fully visible.
-    if (this.children.length === 0 && this.growth >= 1) {
-      this.leafGrowth = min(this.leafGrowth + growthSpeed * 1.8, 1);
-    }
-
-    // Update child branches after this branch has updated its own position.
-    for (let child of this.children) {
-      child.update(growthSpeed, windForce);
-    }
-  }
-
-  display() {
-    // Do not draw a branch before it has started growing.
-    if (this.growth <= 0) return;
-
-    let currentEndX = this.getCurrentEndX();
-    let currentEndY = this.getCurrentEndY();
-
-    // Longer branches are thicker, creating a trunk-to-twig hierarchy.
-    let thickness = map(this.length, 20, 230, 2, 14, true);
-
-    stroke(105, 75, 45);
-    strokeWeight(thickness);
-    strokeCap(ROUND);
-
-    line(this.x, this.y, currentEndX, currentEndY);
-
-    // Draw child branches from this branch outward.
-    for (let child of this.children) {
-      child.display();
-    }
-
-    // Only terminal branches grow leaves.
-    // This makes the tree read clearly as branches first, leaves second.
-    if (this.children.length === 0 && this.leafGrowth > 0) {
-      this.displayLeaf();
-    }
-  }
-
-  displayLeaf() {
-    let leafX = this.getCurrentEndX();
-    let leafY = this.getCurrentEndY();
-
-    push();
-    translate(leafX, leafY);
-
-    // Rotate leaves based on the branch direction with a small random offset.
-    // This makes leaves appear attached to the branch instead of floating randomly.
-    rotate(this.currentAngle + HALF_PI + this.leafAngleOffset);
-
-    // Scale allows the leaf to grow smoothly from the branch tip.
-    scale(this.leafGrowth);
-
-    noStroke();
-
-    // Main leaf body.
-    fill(120, 160, 75, 220);
-    beginShape();
-    vertex(0, -this.leafSize);
-    bezierVertex(
-      this.leafSize * 0.8,
-      -this.leafSize * 0.5,
-      this.leafSize * 0.8,
-      this.leafSize * 0.5,
-      0,
-      this.leafSize
-    );
-    bezierVertex(
-      -this.leafSize * 0.8,
-      this.leafSize * 0.5,
-      -this.leafSize * 0.8,
-      -this.leafSize * 0.5,
-      0,
-      -this.leafSize
-    );
-    endShape(CLOSE);
-
-    // Leaf vein.
-    // This small detail makes the leaf look intentional rather than just a green shape.
-    stroke(80, 115, 55, 180);
-    strokeWeight(1);
-    line(0, -this.leafSize * 0.75, 0, this.leafSize * 0.75);
-
-    pop();
-  }
-
-  getCurrentEndX() {
-    // Interpolate between the start and full end position based on growth.
-    return lerp(this.x, this.endX, this.growth);
-  }
-
-  getCurrentEndY() {
-    return lerp(this.y, this.endY, this.growth);
-  }
-
-  isMouseNear(mx, my, radius = 25) {
-    // This helper supports inputMechanic.js later.
-    // It checks whether the mouse is near a visible branch tip.
-    let d = dist(mx, my, this.getCurrentEndX(), this.getCurrentEndY());
-
-    return d < radius && this.growth > 0.85;
+function keyPressed() {
+  if (key === ' ') {
+    createNewTree();
   }
 }
