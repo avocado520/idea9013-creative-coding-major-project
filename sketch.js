@@ -3,35 +3,63 @@
 // It creates the shared Tree object and calls its update and display methods each frame.
 // The detailed tree structure and branch behaviour are defined in tree.js.
 
+// sketch.js
+
 let tree;
+let windAngle = 0;
+let minX, maxX, minY, maxY;
+let leafImage;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-
-  // Create the tree at the bottom centre of the canvas.
-  // The y position is set close to the canvas height so the trunk grows upward from the bottom edge.
-  tree = new Tree(width / 2, height - 5);
-
-  // Rounded stroke caps make branch ends look softer and more organic.
+  angleMode(RADIANS);
   strokeCap(ROUND);
+  leafImage = createLeafImage();
+  createNewTree();
 }
 
 function draw() {
   background(20, 24, 30);
 
-  // Update the tree's growth animation before drawing it.
-  // This allows branches and leaves to gradually appear over time.
+  windAngle += 0.003;
+  tree.windForce = sin(windAngle) * 0.02;
   tree.update();
-
-  // Draw the current state of the tree after all growth values have been updated.
-  tree.display();
+  tree.render();
 }
 
+function createNewTree() {
+  randomSeed(millis());
+
+  minX = width / 2;
+  maxX = width / 2;
+  minY = height;
+  maxY = height;
+
+  let groundY = height - 50;
+  tree = new Branch(null, width / 2, groundY, PI, 110);
+
+  let xSize = maxX - minX;
+  let ySize = maxY - minY;
+  let scaleValue = 1;
+
+  if (xSize > ySize) {
+    if (xSize > 500) scaleValue = 500 / xSize;
+  } else {
+    if (ySize > 480) scaleValue = 480 / ySize;
+  }
+
+  tree.setScale(scaleValue);
+  tree.x = width / 2 - (xSize / 2) * scaleValue + (tree.x - minX) * scaleValue;
+  tree.y = groundY;
+}
+
+function keyPressed() {
+  if (key === ' ') {
+    createNewTree();
+  }
+}
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-
-  // Recreate the tree after resizing so the root remains aligned with the new canvas size.
-  // Without this, the tree could appear in the wrong position after the window changes.
-  tree = new Tree(width / 2, height - 5);
+  createNewTree();
 }
