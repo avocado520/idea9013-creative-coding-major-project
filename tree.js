@@ -319,7 +319,7 @@ class Branch {
       image(leafImage, -leafImage.width / 2, 0);
       pop();
     }
-  }
+
 }
 
 function keyPressed() {
