@@ -28,6 +28,7 @@ function draw() {
 }
 
 function createNewTree() {
+  // Use the current time in milliseconds to seed the random number generator, ensuring a different tree each time
   randomSeed(millis());
 
   minX = width / 2;

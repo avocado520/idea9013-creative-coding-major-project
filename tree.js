@@ -1,8 +1,27 @@
+/*
+----------------------------------------------------
+Changes:
+- Reduced excessive randomness in branch generation
+- Introduced depth-based branching structure
+- Increased tree height while keeping the root position fixed
+- Created a more layered and natural canopy
+- Balanced crown density for future interaction design
+----------------------------------------------------
+*/
 
 let windAngle = 0;
 let minX, maxX, minY, maxY;
 
 let leafImage;
+let tree;
+
+// ===== TREE STRUCTURE PARAMETERS =====
+// These values control branch density and shape variation.
+// The goal is to keep the tree crown large and stable
+// while still allowing subtle natural differences.
+let minLengthRatio = 0.72;
+let maxLengthRatio = 0.86;
+let stopLength = 8;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -14,15 +33,15 @@ function setup() {
 }
 
 function draw() {
-  
-  background(215); 
+  background(215);
 
-  fill(160); 
+  // Draw ground area.
+  fill(160);
   noStroke();
   rect(0, height - 50, width, 50);
 
+  // Create gentle wind movement over time.
   windAngle += 0.003;
-
   tree.windForce = sin(windAngle) * 0.02;
 
   tree.update();
@@ -30,40 +49,52 @@ function draw() {
 }
 
 function createNewTree() {
-  
-
+  // Reset tree boundary values before generating a new structure.
   minX = width / 2;
   maxX = width / 2;
   minY = height;
   maxY = height;
 
-  // the ground level is set at height - 50 to ensure the tree starts growing from the ground
-  let groundY = height - 50; 
+  // Keep the tree root fixed on the ground.
+  let groundY = height - 50;
 
-  tree = new Branch(null, width / 2, groundY, PI, height*0.18);
+  // Generate a taller tree while keeping the root position fixed.
+  // This helps place the tree crown closer to the upper part of the canvas.
+  tree = new Branch(null, width / 2, groundY, PI, height * 0.20);
 
   let xSize = maxX - minX;
   let ySize = maxY - minY;
 
   let scaleValue = 1;
 
-  if (xSize > ySize) {
-    if (xSize > width*0.9) {
-      scaleValue = (width * 0.9) / xSize;
-    }
-  } else {
-    if (ySize > height*0.9) { 
-      scaleValue = (height * 0.9) / ySize;
+  // Limit the final tree size inside the canvas.
+  // Width is slightly restricted to avoid a flat umbrella-like canopy.
+  // Height is allowed to grow more so the tree crown sits higher.
+  let maxTreeWidth = width * 0.78;
+  let maxTreeHeight = height * 0.98;
+
+  if (xSize > maxTreeWidth) {
+    scaleValue = maxTreeWidth / xSize;
+  }
+
+  if (ySize > maxTreeHeight) {
+    let heightScale = maxTreeHeight / ySize;
+
+    if (heightScale < scaleValue) {
+      scaleValue = heightScale;
     }
   }
 
   tree.setScale(scaleValue);
 
+  // Re-center the tree after scaling.
   tree.x = width / 2;
   tree.y = groundY;
 }
 
 function createLeafImage() {
+  // Create a reusable leaf image.
+  // Using a graphics buffer improves performance compared with drawing each leaf manually.
   let buffer = createGraphics(12, 18);
 
   buffer.clear();
@@ -113,44 +144,78 @@ class Branch {
     this.branchA = null;
     this.branchB = null;
 
+    // Track branch depth.
+    // Different depth levels use different branching angles
+    // to create a more natural tree silhouette.
+    if (this.parent === null) {
+      this.depth = 0;
+    } else {
+      this.depth = this.parent.depth + 1;
+    }
+
     if (this.parent !== null) {
       this.angle = this.parent.angle + angleOffset;
       this.angleOffset = angleOffset;
     } else {
+      // Keep the main trunk stable.
       this.angle = angleOffset;
-      this.angleOffset = -0.2 + random(0.4);
+      this.angleOffset = 0;
     }
 
     let xB = this.x + sin(this.angle) * this.length;
     let yB = this.y + cos(this.angle) * this.length;
 
-    if (this.length > 10) {
-      if (this.length + random(this.length * 10) > 30) {
-        this.branchA = new Branch(
-          this,
-          xB,
-          yB,
-          -0.1 - random(0.4) + ((this.angle % TWO_PI) > PI ? -1 / this.length : 1 / this.length),
-          this.length * (0.6 + random(0.3))
-        );
+    // Generate child branches recursively.
+    // Branch angles change based on depth level:
+    //
+    // Early branches grow mostly upward.
+    // Middle branches expand outward to form the main crown.
+    // Terminal branches add irregularity and visual complexity.
+    //
+    // This creates a layered canopy rather than a flat umbrella shape.
+    if (this.length > stopLength) {
+      let leftAngle;
+      let rightAngle;
+
+      if (this.depth < 2) {
+        // Primary structure:
+        // Grow upward first to increase overall tree height.
+        leftAngle = -0.16 + random(-0.05, 0.05);
+        rightAngle = 0.16 + random(-0.05, 0.05);
+      } else if (this.depth < 5) {
+        // Secondary structure:
+        // Expand the crown horizontally while maintaining balance.
+        leftAngle = -0.28 + random(-0.08, 0.08);
+        rightAngle = 0.25 + random(-0.08, 0.08);
+      } else {
+        // Fine branching:
+        // Add subtle randomness to create a more organic canopy edge.
+        leftAngle = -0.38 + random(-0.10, 0.10);
+        rightAngle = 0.32 + random(-0.10, 0.10);
       }
 
-      if (this.length + random(this.length * 10) > 30) {
-        this.branchB = new Branch(
-          this,
-          xB,
-          yB,
-          0.1 + random(0.4) + ((this.angle % TWO_PI) > PI ? -1 / this.length : 1 / this.length),
-          this.length * (0.6 + random(0.3))
-        );
-      }
+      this.branchA = new Branch(
+        this,
+        xB,
+        yB,
+        leftAngle,
+        // Apply controlled randomness to branch length.
+        // This prevents repetitive patterns while preserving the overall tree size.
+        this.length * random(minLengthRatio, maxLengthRatio)
+      );
 
-      if (this.branchB !== null && this.branchA === null) {
-        this.branchA = this.branchB;
-        this.branchB = null;
-      }
+      this.branchB = new Branch(
+        this,
+        xB,
+        yB,
+        rightAngle,
+        // Apply controlled randomness to branch length.
+        // This keeps the crown natural without causing extreme variation.
+        this.length * random(minLengthRatio, maxLengthRatio)
+      );
     }
 
+    // Store the generated tree boundaries for later scaling.
     minX = min(xB, minX);
     maxX = max(xB, maxX);
     minY = min(yB, minY);
@@ -158,6 +223,7 @@ class Branch {
   }
 
   setScale(scaleValue) {
+    // Scale all branches recursively.
     this.length *= scaleValue;
 
     if (this.branchA !== null) {
@@ -171,17 +237,30 @@ class Branch {
 
   update() {
     if (this.parent !== null) {
-      this.x = this.parent.x + sin(this.parent.angle) * this.parent.length * this.parent.growth;
-      this.y = this.parent.y + cos(this.parent.angle) * this.parent.length * this.parent.growth;
+      // Update branch position based on parent growth.
+      this.x =
+        this.parent.x +
+        sin(this.parent.angle) * this.parent.length * this.parent.growth;
 
-      this.windForce = this.parent.windForce * (1.0 + 5.0 / this.length) + this.blastForce;
+      this.y =
+        this.parent.y +
+        cos(this.parent.angle) * this.parent.length * this.parent.growth;
 
-      this.blastForce = (this.blastForce + sin(this.x / 2 + windAngle) * 0.005 / this.length) * 0.98;
+      // Simulate gentle wind movement.
+      // Smaller branches receive stronger movement than larger branches.
+      this.windForce =
+        this.parent.windForce * (1.0 + 5.0 / this.length) + this.blastForce;
 
-      this.angle = this.parent.angle + this.angleOffset + this.windForce + this.blastForce;
+      this.blastForce =
+        (this.blastForce + sin(this.x / 2 + windAngle) * 0.005 / this.length) *
+        0.98;
+
+      this.angle =
+        this.parent.angle + this.angleOffset + this.windForce + this.blastForce;
 
       this.growth = min(this.growth + 0.1 * this.parent.growth, 1);
     } else {
+      // Grow the root branch first.
       this.growth = min(this.growth + 0.1, 1);
     }
 
@@ -199,6 +278,7 @@ class Branch {
       let xB = this.x;
       let yB = this.y;
 
+      // Create a curved branch shape using Bezier control points.
       if (this.parent !== null) {
         xB += (this.x - this.parent.x) * 0.4;
         yB += (this.y - this.parent.y) * 0.4;
@@ -207,6 +287,7 @@ class Branch {
         yB += cos(this.angle + this.angleOffset) * this.length * 0.3;
       }
 
+      // Shorter branches appear lighter, creating visual depth.
       let branchColor = floor(1100 / this.length);
 
       stroke(branchColor);
@@ -231,6 +312,7 @@ class Branch {
         this.branchB.render();
       }
     } else {
+      // Terminal branches display leaf sprites.
       push();
       translate(this.x, this.y);
       rotate(-this.angle);
@@ -241,7 +323,16 @@ class Branch {
 }
 
 function keyPressed() {
-  if (key === ' ') {
+  // Press space to regenerate the tree.
+  // The overall tree shape stays controlled,
+  // while small variations appear in branch angles and length.
+  if (key === " ") {
     createNewTree();
   }
+}
+
+function windowResized() {
+  // Rebuild the tree when the browser size changes.
+  resizeCanvas(windowWidth, windowHeight);
+  createNewTree();
 }
