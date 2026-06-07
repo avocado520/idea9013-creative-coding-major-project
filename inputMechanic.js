@@ -1,7 +1,8 @@
 class InputMechanic {
   handleKeyPressed(keyValue) {
     if (keyValue === ' ') {
-      createNewTree(); // Type space to create a new tree
+      createNewTree(); // Type space to create a new tree and
+      timeMechanic.reset(); // Reset time mechanic to sync with the new tree.
     }
   }
   handleMouseMoved(mx, my) {
