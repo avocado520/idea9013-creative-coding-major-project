@@ -6,10 +6,13 @@
 
 let tree;
 let windAngle = 0;
+let timeMechanic;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(RADIANS);
+
+  timeMechanic = new TimeMechanic();
 
   leafImage = createLeafImage();
 
@@ -17,7 +20,7 @@ function setup() {
 }
 
 function draw() {
-  background(215);
+  background(timeMechanic.getBackgroundColor());
 
   // Draw ground area.
   fill(160);
