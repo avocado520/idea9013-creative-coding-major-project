@@ -34,6 +34,7 @@ function draw() {
   tree.update(growthStep);
 
   tree.render();
+
 }
 
 function keyPressed() {
@@ -41,6 +42,9 @@ function keyPressed() {
   // The overall tree shape stays controlled,
   // while small variations appear in branch angles and length.
   inputMechanic.handleKeyPressed(key);
+
+  audioSFX();
+
 }
 
 function mouseMoved() {
