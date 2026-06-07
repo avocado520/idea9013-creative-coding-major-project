@@ -12,10 +12,13 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(RADIANS);
 
+  // Create the time mechanic before using any time-based values.
   timeMechanic = new TimeMechanic();
 
+  // Create reusable images once at the beginning.
+  // The tree uses leafImage, and flower.js uses flowerImage.
   leafImage = createLeafImage();
-  //flowerImage = createFlowerImage();
+  flowerImage = createFlowerImage();
 
   createNewTree();
 
@@ -32,8 +35,16 @@ function draw() {
   windAngle += 0.003;
   tree.windForce = sin(windAngle) * 0.02;
 
+  // Use timeMechanic to control tree growth speed.
   let growthStep = timeMechanic.getTreeGrowthStep();
   tree.update(growthStep);
+
+  // If the user has not hovered for 5 seconds,
+  // add one flower and reset the inactivity timer.
+  if (timeMechanic.shouldAutoBloom()) {
+    addFlowerOnRandomBranch();
+    timeMechanic.recordUserHover();
+  }
 
   tree.render();
 
@@ -51,12 +62,15 @@ function keyPressed() {
 }
 
 function mouseMoved() {
-  // Pass the current mouse position to inputMechanic to check if the cursor is hovering over a branch.
+  // Pass the current mouse position to inputMechanic
+  // so it can detect whether the user is hovering over the tree.
   inputMechanic.handleMouseMoved(mouseX, mouseY);
+  bloomFromMouseHover(mouseX, mouseY);
 }
 
 function mouseClicked() {
-  // Pass click position to inputMechanic to check if a flower was clicked.
+  // Pass the click position to inputMechanic
+  // so it can check whether a flower was clicked.
   inputMechanic.handleMouseClicked(mouseX, mouseY);
 }
 
@@ -64,6 +78,9 @@ function windowResized() {
   // Rebuild the tree when the browser size changes.
   resizeCanvas(windowWidth, windowHeight);
   createNewTree();
+
+  // Reset the time mechanic so the scene timing starts cleanly after resizing.
+  timeMechanic.reset();
 }
 
 function drawGround() {
@@ -89,7 +106,6 @@ function drawGround() {
     vertex(x, groundY);
   }
 
-  // IMPORTANT:
   // Force the final surface point to reach the right edge.
   let lastNoiseValue = noise(width * 0.01);
   let lastGroundY = groundBaseY + map(lastNoiseValue, 0, 1, -18, 12);
