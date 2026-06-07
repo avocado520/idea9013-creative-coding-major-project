@@ -18,6 +18,8 @@ function setup() {
   //flowerImage = createFlowerImage();
 
   createNewTree();
+
+  SFXToggle();
 }
 
 function draw() {
