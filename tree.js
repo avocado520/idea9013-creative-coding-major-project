@@ -26,7 +26,7 @@ let leafImage;
 // while still allowing subtle natural differences.
 let minLengthRatio = 0.72;
 let maxLengthRatio = 0.78;
-let stopLength = 30;
+let stopLength = 32;
 
 function createNewTree() {
   // Reset tree boundary values before generating a new structure.

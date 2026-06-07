@@ -40,9 +40,12 @@ function keyPressed() {
   // Press space to regenerate the tree.
   // The overall tree shape stays controlled,
   // while small variations appear in branch angles and length.
-  if (key === " ") {
-    createNewTree();
-  }
+  inputMechanic.handleKeyPressed(key);
+}
+
+function mouseMoved() {
+  // Pass the current mouse position to inputMechanic to check if the cursor is hovering over a branch.
+  inputMechanic.handleMouseMoved(mouseX, mouseY);
 }
 
 function windowResized() {
