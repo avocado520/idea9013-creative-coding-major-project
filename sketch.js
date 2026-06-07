@@ -42,7 +42,8 @@ function keyPressed() {
   // The overall tree shape stays controlled,
   // while small variations appear in branch angles and length.
   inputMechanic.handleKeyPressed(key);
-
+  
+  // Starting chime and rustling sfx also triggered on space
   audioSFX();
 
 }
