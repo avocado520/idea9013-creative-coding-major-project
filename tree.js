@@ -25,8 +25,8 @@ let leafImage;
 // The goal is to keep the tree crown large and stable
 // while still allowing subtle natural differences.
 let minLengthRatio = 0.72;
-let maxLengthRatio = 0.86;
-let stopLength = 10;
+let maxLengthRatio = 0.78;
+let stopLength = 30;
 
 function createNewTree() {
   // Reset tree boundary values before generating a new structure.
@@ -40,7 +40,7 @@ function createNewTree() {
 
   // Generate a taller tree while keeping the root position fixed.
   // This helps place the tree crown closer to the upper part of the canvas.
-  tree = new Branch(null, width / 2, groundY, PI, height * 0.20);
+  tree = new Branch(null, width / 2, groundY, PI, height * 0.24);
 
   let xSize = maxX - minX;
   let ySize = maxY - minY;
@@ -173,18 +173,18 @@ class Branch {
       if (this.depth < 2) {
         // Primary structure:
         // Grow upward first to increase overall tree height.
-        leftAngle = -0.16 + random(-0.05, 0.05);
-        rightAngle = 0.16 + random(-0.05, 0.05);
+        leftAngle = -0.25 + random(-0.05, 0.05);
+        rightAngle = 0.25 + random(-0.05, 0.05);
       } else if (this.depth < 5) {
         // Secondary structure:
         // Expand the crown horizontally while maintaining balance.
-        leftAngle = -0.28 + random(-0.08, 0.08);
-        rightAngle = 0.25 + random(-0.08, 0.08);
+        leftAngle = -0.45 + random(-0.08, 0.08);
+        rightAngle = 0.45 + random(-0.08, 0.08);
       } else {
         // Fine branching:
         // Add subtle randomness to create a more organic canopy edge.
-        leftAngle = -0.38 + random(-0.10, 0.10);
-        rightAngle = 0.32 + random(-0.10, 0.10);
+        leftAngle = -0.6 + random(-0.10, 0.10);
+        rightAngle = 0.55 + random(-0.10, 0.10);
       }
 
       this.branchA = new Branch(
@@ -365,4 +365,8 @@ class Branch {
       }
     }
   }
+}
+
+function keyPressed() {
+  inputMechanic.handleKeyPressed(key);
 }
