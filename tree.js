@@ -9,11 +9,16 @@ Changes:
 ----------------------------------------------------
 */
 
-let windAngle = 0;
+// tree.js
+// This file contains the tree generation logic and the Branch class.
+// It does not contain setup(), draw(), keyPressed(), or windowResized().
+// Those p5.js lifecycle functions are kept in sketch.js.
+
+// Tree boundary values are used when generating a new tree.
+// They help measure the generated tree size so it can be scaled into the canvas.
 let minX, maxX, minY, maxY;
 
 let leafImage;
-let tree;
 
 // ===== TREE STRUCTURE PARAMETERS =====
 // These values control branch density and shape variation.
@@ -22,31 +27,6 @@ let tree;
 let minLengthRatio = 0.72;
 let maxLengthRatio = 0.86;
 let stopLength = 8;
-
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  angleMode(RADIANS);
-
-  leafImage = createLeafImage();
-
-  createNewTree();
-}
-
-function draw() {
-  background(215);
-
-  // Draw ground area.
-  fill(160);
-  noStroke();
-  rect(0, height - 50, width, 50);
-
-  // Create gentle wind movement over time.
-  windAngle += 0.003;
-  tree.windForce = sin(windAngle) * 0.02;
-
-  tree.update();
-  tree.render();
-}
 
 function createNewTree() {
   // Reset tree boundary values before generating a new structure.
@@ -222,11 +202,11 @@ class Branch {
         // This keeps the crown natural without causing extreme variation.
         this.length * random(minLengthRatio, maxLengthRatio)
       );
-      } else {
+    } else {
 
-        // Terminal branches can grow flowers.
-        if (random(1) < 0.35) {
-          this.hasFlower = true;
+      // Terminal branches can grow flowers.
+      if (random(1) < 0.35) {
+        this.hasFlower = true;
       }
     }
 
@@ -345,19 +325,4 @@ class Branch {
       }
     }
   }
-}
-
-function keyPressed() {
-  // Press space to regenerate the tree.
-  // The overall tree shape stays controlled,
-  // while small variations appear in branch angles and length.
-  if (key === " ") {
-    createNewTree();
-  }
-}
-
-function windowResized() {
-  // Rebuild the tree when the browser size changes.
-  resizeCanvas(windowWidth, windowHeight);
-  createNewTree();
 }
