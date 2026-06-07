@@ -46,6 +46,9 @@ function draw() {
 
   tree.render();
 
+  // Draw the soil mound after the tree,
+  // so it covers the lower trunk and makes the tree look planted.
+  drawFrontMound();
 }
 
 function keyPressed() {
@@ -134,4 +137,123 @@ function drawGround() {
   vertex(width, lastGroundY);
 
   endShape();
+}
+
+function drawFrontMound() {
+  if (!tree) return;
+
+  let baseX = tree.x;
+  let groundY = height - 100;
+
+  noStroke();
+
+  // Main soil mound.
+  fill(150, 100, 55);
+
+  beginShape();
+
+  vertex(baseX - 110, groundY + 42);
+
+  bezierVertex(
+    baseX - 88,
+    groundY + 12,
+    baseX - 45,
+    groundY + 8,
+    baseX - 14,
+    groundY + 22
+  );
+
+  bezierVertex(
+    baseX + 12,
+    groundY + 6,
+    baseX + 62,
+    groundY + 12,
+    baseX + 96,
+    groundY + 38
+  );
+
+  bezierVertex(
+    baseX + 78,
+    groundY + 64,
+    baseX - 72,
+    groundY + 68,
+    baseX - 110,
+    groundY + 42
+  );
+
+  endShape(CLOSE);
+
+  // Add a soft lower layer so it feels like loose soil,
+  // not a perfect single blob.
+  fill(142, 92, 48);
+  beginShape();
+
+  vertex(baseX - 78, groundY + 48);
+
+  bezierVertex(
+    baseX - 52,
+    groundY + 34,
+    baseX - 10,
+    groundY + 38,
+    baseX + 8,
+    groundY + 46
+  );
+
+  bezierVertex(
+    baseX + 38,
+    groundY + 36,
+    baseX + 76,
+    groundY + 44,
+    baseX + 84,
+    groundY + 58
+  );
+
+  bezierVertex(
+    baseX + 48,
+    groundY + 72,
+    baseX - 46,
+    groundY + 70,
+    baseX - 78,
+    groundY + 48
+  );
+
+  endShape(CLOSE);
+
+  // Gentle top highlight.
+  stroke(180, 124, 74, 150);
+  strokeWeight(4);
+  strokeCap(ROUND);
+  noFill();
+
+  beginShape();
+  vertex(baseX - 76, groundY + 30);
+
+  bezierVertex(
+    baseX - 42,
+    groundY + 14,
+    baseX + 38,
+    groundY + 14,
+    baseX + 76,
+    groundY + 32
+  );
+
+  endShape();
+
+  // Small stones.
+  noStroke();
+  fill(108, 75, 50, 150);
+  ellipse(baseX - 52, groundY + 46, 9, 6);
+  ellipse(baseX + 56, groundY + 44, 8, 5);
+  ellipse(baseX - 10, groundY + 58, 7, 5);
+
+  // Tiny grass marks on both sides.
+  stroke(78, 112, 42, 150);
+  strokeWeight(2);
+  strokeCap(ROUND);
+
+  line(baseX - 96, groundY + 34, baseX - 102, groundY + 22);
+  line(baseX - 88, groundY + 35, baseX - 84, groundY + 24);
+
+  line(baseX + 96, groundY + 36, baseX + 102, groundY + 24);
+  line(baseX + 88, groundY + 35, baseX + 84, groundY + 24);
 }
