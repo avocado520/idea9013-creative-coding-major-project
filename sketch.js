@@ -48,6 +48,11 @@ function mouseMoved() {
   inputMechanic.handleMouseMoved(mouseX, mouseY);
 }
 
+function mouseClicked() {
+  // Pass click position to inputMechanic to check if a flower was clicked.
+  inputMechanic.handleMouseClicked(mouseX, mouseY);
+}
+
 function windowResized() {
   // Rebuild the tree when the browser size changes.
   resizeCanvas(windowWidth, windowHeight);
