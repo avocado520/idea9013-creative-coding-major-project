@@ -144,6 +144,15 @@ class Branch {
     this.branchA = null;
     this.branchB = null;
 
+    // Flower settings for terminal branches.
+    // These random values are created once,
+    // so every flower keeps a stable position and size.
+    this.hasFlower = false;
+    this.flowerSize = random(0.7, 1.2);
+    this.flowerAngle = random(TWO_PI);
+    this.flowerOffsetX = random(-10, 10);
+    this.flowerOffsetY = random(-8, 8);
+
     // Track branch depth.
     // Different depth levels use different branching angles
     // to create a more natural tree silhouette.
@@ -213,6 +222,12 @@ class Branch {
         // This keeps the crown natural without causing extreme variation.
         this.length * random(minLengthRatio, maxLengthRatio)
       );
+      } else {
+
+        // Terminal branches can grow flowers.
+        if (random(1) < 0.35) {
+          this.hasFlower = true;
+      }
     }
 
     // Store the generated tree boundaries for later scaling.
@@ -318,8 +333,18 @@ class Branch {
       rotate(-this.angle);
       image(leafImage, -leafImage.width / 2, 0);
       pop();
-    }
 
+      // Draw flower near the leaf.
+      if (this.hasFlower) {
+        drawFlower(
+          this.x + this.flowerOffsetX,
+          this.y + this.flowerOffsetY,
+          this.flowerSize,
+          this.flowerAngle
+        );
+      }
+    }
+  }
 }
 
 function keyPressed() {
