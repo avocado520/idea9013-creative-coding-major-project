@@ -15,6 +15,7 @@ function setup() {
   timeMechanic = new TimeMechanic();
 
   leafImage = createLeafImage();
+  //flowerImage = createFlowerImage();
 
   createNewTree();
 }
@@ -22,16 +23,16 @@ function setup() {
 function draw() {
   background(timeMechanic.getBackgroundColor());
 
-  // Draw ground area.
-  fill(160);
-  noStroke();
-  rect(0, height - 50, width, 50);
+  // Draw natural uneven ground.
+  drawGround();
 
   // Create gentle wind movement over time.
   windAngle += 0.003;
   tree.windForce = sin(windAngle) * 0.02;
 
-  tree.update();
+  let growthStep = timeMechanic.getTreeGrowthStep();
+  tree.update(growthStep);
+
   tree.render();
 }
 
@@ -48,4 +49,60 @@ function windowResized() {
   // Rebuild the tree when the browser size changes.
   resizeCanvas(windowWidth, windowHeight);
   createNewTree();
+}
+
+function drawGround() {
+  let groundBaseY = height - 100;
+
+  noStroke();
+  fill(120, 78, 45);
+
+  beginShape();
+
+  // Start from bottom-left.
+  vertex(0, height);
+
+  // Add the first ground surface point.
+  let firstY = groundBaseY + map(noise(0), 0, 1, -18, 12);
+  vertex(0, firstY);
+
+  // Draw uneven surface across the screen.
+  for (let x = 0; x <= width; x += 20) {
+    let noiseValue = noise(x * 0.01);
+    let groundY = groundBaseY + map(noiseValue, 0, 1, -18, 12);
+
+    vertex(x, groundY);
+  }
+
+  // IMPORTANT:
+  // Force the final surface point to reach the right edge.
+  let lastNoiseValue = noise(width * 0.01);
+  let lastGroundY = groundBaseY + map(lastNoiseValue, 0, 1, -18, 12);
+  vertex(width, lastGroundY);
+
+  // Fill down to bottom-right.
+  vertex(width, height);
+
+  endShape(CLOSE);
+
+  // Draw top soil line.
+  stroke(155, 105, 65);
+  strokeWeight(5);
+  noFill();
+
+  beginShape();
+
+  let startY = groundBaseY + map(noise(0), 0, 1, -18, 12);
+  vertex(0, startY);
+
+  for (let x = 0; x <= width; x += 20) {
+    let noiseValue = noise(x * 0.01);
+    let groundY = groundBaseY + map(noiseValue, 0, 1, -18, 12);
+
+    vertex(x, groundY);
+  }
+
+  vertex(width, lastGroundY);
+
+  endShape();
 }

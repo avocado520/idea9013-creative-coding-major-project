@@ -13,7 +13,8 @@ function drawFlower(x, y, flowerSize, flowerAngle) {
   translate(x, y);
   rotate(flowerAngle);
   scale(flowerSize);
-
+  image(flowerImage, -flowerImage.width / 2, -flowerImage.height / 2);
+  
   noStroke();
 
   // Draw five soft pink petals.

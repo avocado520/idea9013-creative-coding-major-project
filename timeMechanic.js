@@ -39,8 +39,15 @@ getBackgroundColor() {
     return lerpColor(this.nightColor, this.morningColor, stageProgress);
   }
 }
-  reset() {
-    // Restart the cycle when the scene is regenerated.
-    this.startTime = millis();
+
+getTreeGrowthStep() {
+  // Convert frame time into a growth amount.
+  // This keeps the animation time-based while avoiding large frame jumps.
+  return constrain(deltaTime * 0.001, 0, 0.02);
+}
+
+reset() {
+  // Restart the cycle when the scene is regenerated.
+  this.startTime = millis();
   }
 }
