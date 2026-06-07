@@ -23,8 +23,8 @@ let minX, maxX, minY, maxY;
 let leafImage;
 
 let minLengthRatio = 0.72;
-let maxLengthRatio = 0.86;
-let stopLength = 10;
+let maxLengthRatio = 0.78;
+let stopLength = 32;
 
 // Store terminal branches for later blooming.
 let flowerBranches = [];

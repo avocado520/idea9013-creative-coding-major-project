@@ -48,8 +48,9 @@ function draw() {
 }
 
 function keyPressed() {
-  // Pass the key input to inputMechanic.
-  // inputMechanic decides what should happen when a key is pressed.
+  // Press space to regenerate the tree.
+  // The overall tree shape stays controlled,
+  // while small variations appear in branch angles and length.
   inputMechanic.handleKeyPressed(key);
 }
 
