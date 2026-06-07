@@ -16,30 +16,29 @@ Changes:
 
 // Tree boundary values are used when generating a new tree.
 // They help measure the generated tree size so it can be scaled into the canvas.
+// tree.js
+
 let minX, maxX, minY, maxY;
 
 let leafImage;
 
-// ===== TREE STRUCTURE PARAMETERS =====
-// These values control branch density and shape variation.
-// The goal is to keep the tree crown large and stable
-// while still allowing subtle natural differences.
 let minLengthRatio = 0.72;
 let maxLengthRatio = 0.86;
 let stopLength = 10;
 
+// Store terminal branches for later blooming.
+let flowerBranches = [];
+
 function createNewTree() {
-  // Reset tree boundary values before generating a new structure.
   minX = width / 2;
   maxX = width / 2;
   minY = height;
   maxY = height;
 
-  // Keep the tree root fixed on the ground.
+  flowerBranches = [];
+
   let groundY = height - 50;
 
-  // Generate a taller tree while keeping the root position fixed.
-  // This helps place the tree crown closer to the upper part of the canvas.
   tree = new Branch(null, width / 2, groundY, PI, height * 0.20);
 
   let xSize = maxX - minX;
@@ -47,9 +46,6 @@ function createNewTree() {
 
   let scaleValue = 1;
 
-  // Limit the final tree size inside the canvas.
-  // Width is slightly restricted to avoid a flat umbrella-like canopy.
-  // Height is allowed to grow more so the tree crown sits higher.
   let maxTreeWidth = width * 0.78;
   let maxTreeHeight = height * 0.98;
 
@@ -67,14 +63,11 @@ function createNewTree() {
 
   tree.setScale(scaleValue);
 
-  // Re-center the tree after scaling.
   tree.x = width / 2;
   tree.y = groundY;
 }
 
 function createLeafImage() {
-  // Create a reusable leaf image.
-  // Using a graphics buffer improves performance compared with drawing each leaf manually.
   let buffer = createGraphics(12, 18);
 
   buffer.clear();
@@ -105,6 +98,58 @@ function createLeafImage() {
   return buffer;
 }
 
+function addFlowerOnRandomBranch() {
+  let availableBranches = flowerBranches.filter(branch => {
+    return !branch.hasFlower && branch.growth > 0.55;
+  });
+
+  if (availableBranches.length === 0) {
+    return false;
+  }
+
+  let selectedBranch = random(availableBranches);
+  selectedBranch.hasFlower = true;
+  selectedBranch.flowerGrowth = 0;
+
+  return true;
+}
+
+function bloomFromMouseHover(px, py) {
+  if (isMouseHoveringTree(px, py)) {
+    addFlowerOnRandomBranch();
+
+    if (timeMechanic) {
+      timeMechanic.recordUserHover();
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+function isMouseHoveringTree(px, py) {
+  if (!tree) return false;
+  return tree.isPointNearBranch(px, py);
+}
+
+function distanceToSegment(px, py, x1, y1, x2, y2) {
+  let dx = x2 - x1;
+  let dy = y2 - y1;
+
+  if (dx === 0 && dy === 0) {
+    return dist(px, py, x1, y1);
+  }
+
+  let t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
+  t = constrain(t, 0, 1);
+
+  let closestX = x1 + t * dx;
+  let closestY = y1 + t * dy;
+
+  return dist(px, py, closestX, closestY);
+}
+
 class Branch {
   constructor(parent, x, y, angleOffset, length) {
     this.parent = parent;
@@ -124,22 +169,13 @@ class Branch {
     this.branchA = null;
     this.branchB = null;
 
-    // FLOWER DISABLED:
-    // These flower variables are kept here as comments only.
-    // The tree will now start with branches and leaves only.
-    // If flower blooming is needed later, these can be restored.
-    /*
     this.hasFlower = false;
     this.flowerSize = random(0.85, 1.05);
     this.flowerAngle = random(TWO_PI);
     this.flowerOffsetX = random(-10, 10);
     this.flowerOffsetY = random(-8, 8);
     this.flowerGrowth = 0;
-    */
 
-    // Track branch depth.
-    // Different depth levels use different branching angles
-    // to create a more natural tree silhouette.
     if (this.parent === null) {
       this.depth = 0;
     } else {
@@ -150,7 +186,6 @@ class Branch {
       this.angle = this.parent.angle + angleOffset;
       this.angleOffset = angleOffset;
     } else {
-      // Keep the main trunk stable.
       this.angle = angleOffset;
       this.angleOffset = 0;
     }
@@ -158,31 +193,17 @@ class Branch {
     let xB = this.x + sin(this.angle) * this.length;
     let yB = this.y + cos(this.angle) * this.length;
 
-    // Generate child branches recursively.
-    // Branch angles change based on depth level:
-    //
-    // Early branches grow mostly upward.
-    // Middle branches expand outward to form the main crown.
-    // Terminal branches add irregularity and visual complexity.
-    //
-    // This creates a layered canopy rather than a flat umbrella shape.
     if (this.length > stopLength) {
       let leftAngle;
       let rightAngle;
 
       if (this.depth < 2) {
-        // Primary structure:
-        // Grow upward first to increase overall tree height.
         leftAngle = -0.16 + random(-0.05, 0.05);
         rightAngle = 0.16 + random(-0.05, 0.05);
       } else if (this.depth < 5) {
-        // Secondary structure:
-        // Expand the crown horizontally while maintaining balance.
         leftAngle = -0.28 + random(-0.08, 0.08);
         rightAngle = 0.25 + random(-0.08, 0.08);
       } else {
-        // Fine branching:
-        // Add subtle randomness to create a more organic canopy edge.
         leftAngle = -0.38 + random(-0.10, 0.10);
         rightAngle = 0.32 + random(-0.10, 0.10);
       }
@@ -192,8 +213,6 @@ class Branch {
         xB,
         yB,
         leftAngle,
-        // Apply controlled randomness to branch length.
-        // This prevents repetitive patterns while preserving the overall tree size.
         this.length * random(minLengthRatio, maxLengthRatio)
       );
 
@@ -202,13 +221,12 @@ class Branch {
         xB,
         yB,
         rightAngle,
-        // Apply controlled randomness to branch length.
-        // This keeps the crown natural without causing extreme variation.
         this.length * random(minLengthRatio, maxLengthRatio)
       );
+    } else {
+      flowerBranches.push(this);
     }
 
-    // Store the generated tree boundaries for later scaling.
     minX = min(xB, minX);
     maxX = max(xB, maxX);
     minY = min(yB, minY);
@@ -216,7 +234,6 @@ class Branch {
   }
 
   setScale(scaleValue) {
-    // Scale all branches recursively.
     this.length *= scaleValue;
 
     if (this.branchA !== null) {
@@ -230,7 +247,6 @@ class Branch {
 
   update(growthStep = 0.03) {
     if (this.parent !== null) {
-      // Keep this branch attached to the currently visible end of its parent.
       this.x =
         this.parent.x +
         sin(this.parent.angle) * this.parent.length * this.parent.growth;
@@ -239,8 +255,6 @@ class Branch {
         this.parent.y +
         cos(this.parent.angle) * this.parent.length * this.parent.growth;
 
-      // Simulate gentle wind movement.
-      // Smaller branches receive stronger movement than larger branches.
       this.windForce =
         this.parent.windForce * (1.0 + 5.0 / this.length) + this.blastForce;
 
@@ -251,21 +265,14 @@ class Branch {
       this.angle =
         this.parent.angle + this.angleOffset + this.windForce + this.blastForce;
 
-      // Use time-based growth instead of a fixed frame step.
       this.growth = min(this.growth + growthStep * this.parent.growth, 1);
     } else {
-      // Grow the root branch first.
       this.growth = min(this.growth + growthStep, 1);
     }
 
-    // FLOWER DISABLED:
-    // Flower growth is currently turned off.
-    // This prevents flowers from appearing at the start.
-    /*
-    if (this.branchA === null && this.growth > 0.2) {
-      this.flowerGrowth = min(this.flowerGrowth + growthStep * 1.5, 1);
+    if (this.hasFlower && this.growth > 0.3) {
+      this.flowerGrowth = min(this.flowerGrowth + growthStep * 1.2, 1);
     }
-    */
 
     if (this.branchA !== null) {
       this.branchA.update(growthStep);
@@ -279,15 +286,12 @@ class Branch {
   render() {
     if (this.growth <= 0) return;
 
-    // Draw only the currently grown part of this branch.
-    // This makes the branch visually extend over time instead of appearing fully at once.
     let currentEndX = this.x + sin(this.angle) * this.length * this.growth;
     let currentEndY = this.y + cos(this.angle) * this.length * this.growth;
 
     let xB = this.x;
     let yB = this.y;
 
-    // Create a curved branch shape using Bezier control points.
     if (this.parent !== null) {
       xB += (this.x - this.parent.x) * 0.4;
       yB += (this.y - this.parent.y) * 0.4;
@@ -296,7 +300,6 @@ class Branch {
       yB += cos(this.angle + this.angleOffset) * this.length * 0.3 * this.growth;
     }
 
-    // Shorter branches appear lighter, creating visual depth.
     let branchColor = floor(1100 / this.length);
 
     stroke(branchColor);
@@ -304,26 +307,15 @@ class Branch {
     strokeCap(ROUND);
     noFill();
 
-    bezier(
-      this.x,
-      this.y,
-      xB,
-      yB,
-      xB,
-      yB,
-      currentEndX,
-      currentEndY
-    );
+    bezier(this.x, this.y, xB, yB, xB, yB, currentEndX, currentEndY);
 
     if (this.branchA !== null) {
-      // Child branches are rendered recursively.
       this.branchA.render();
 
       if (this.branchB !== null) {
         this.branchB.render();
       }
     } else {
-      // Leaves start appearing once the terminal branch is visible enough.
       if (this.growth > 0.3) {
         let leafProgress = map(this.growth, 0.3, 1, 0, 1);
         leafProgress = constrain(leafProgress, 0, 1);
@@ -331,17 +323,10 @@ class Branch {
         push();
         translate(currentEndX, currentEndY);
         rotate(-this.angle);
-
-        // Grow the leaf in gradually.
         scale(leafProgress);
         image(leafImage, -leafImage.width / 2, 0);
-
         pop();
 
-        // FLOWER DISABLED:
-        // Flower drawing is commented out so the tree begins with leaves only.
-        // Restore this block later if you want flowers to bloom after the tree grows.
-        /*
         if (this.hasFlower) {
           push();
 
@@ -351,18 +336,36 @@ class Branch {
           );
 
           scale(this.flowerGrowth);
-
-          drawFlower(
-            0,
-            0,
-            this.flowerSize,
-            this.flowerAngle
-          );
+          drawFlower(0, 0, this.flowerSize, this.flowerAngle);
 
           pop();
         }
-        */
       }
     }
+  }
+
+  isPointNearBranch(px, py) {
+    if (this.growth <= 0) return false;
+
+    let endX = this.x + sin(this.angle) * this.length * this.growth;
+    let endY = this.y + cos(this.angle) * this.length * this.growth;
+
+    if (this.length > 25) {
+      let hitDistance = max(10, this.length / 8);
+
+      if (distanceToSegment(px, py, this.x, this.y, endX, endY) < hitDistance) {
+        return true;
+      }
+    }
+
+    if (this.branchA !== null && this.branchA.isPointNearBranch(px, py)) {
+      return true;
+    }
+
+    if (this.branchB !== null && this.branchB.isPointNearBranch(px, py)) {
+      return true;
+    }
+
+    return false;
   }
 }
