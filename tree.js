@@ -29,6 +29,11 @@ let stopLength = 32;
 // Store terminal branches for later blooming.
 let flowerBranches = [];
 
+let fallingPetals = [];
+let fallingLeaves = [];
+
+let leafFallStarted = false;
+
 function createNewTree() {
   minX = width / 2;
   maxX = width / 2;
@@ -36,6 +41,9 @@ function createNewTree() {
   maxY = height;
 
   flowerBranches = [];
+  fallingPetals = [];
+  fallingLeaves = [];
+  leafFallStarted = false;
 
   let groundY = height - 50;
 
@@ -176,6 +184,10 @@ class Branch {
     this.flowerOffsetY = random(-8, 8);
     this.flowerGrowth = 0;
 
+    this.petalTimer = int(random(30, 120));
+
+    this.leafHasFallen = false;
+
     if (this.parent === null) {
       this.depth = 0;
     } else {
@@ -197,15 +209,17 @@ class Branch {
       let leftAngle;
       let rightAngle;
 
+      // Use different angle ranges at different depths.
+      // This creates a more layered, uneven canopy instead of a perfectly symmetrical tree.
       if (this.depth < 2) {
-        leftAngle = -0.16 + random(-0.05, 0.05);
-        rightAngle = 0.16 + random(-0.05, 0.05);
+        leftAngle = -0.20 + random(-0.08, 0.06);
+        rightAngle = 0.18 + random(-0.06, 0.08);
       } else if (this.depth < 5) {
-        leftAngle = -0.28 + random(-0.08, 0.08);
-        rightAngle = 0.25 + random(-0.08, 0.08);
+        leftAngle = -0.34 + random(-0.12, 0.10);
+        rightAngle = 0.30 + random(-0.10, 0.12);
       } else {
-        leftAngle = -0.38 + random(-0.10, 0.10);
-        rightAngle = 0.32 + random(-0.10, 0.10);
+        leftAngle = -0.48 + random(-0.16, 0.14);
+        rightAngle = 0.42 + random(-0.14, 0.16);
       }
 
       this.branchA = new Branch(
@@ -213,7 +227,7 @@ class Branch {
         xB,
         yB,
         leftAngle,
-        this.length * random(minLengthRatio, maxLengthRatio)
+        this.length * random(0.6, 0.8)
       );
 
       this.branchB = new Branch(
@@ -221,7 +235,7 @@ class Branch {
         xB,
         yB,
         rightAngle,
-        this.length * random(minLengthRatio, maxLengthRatio)
+        this.length * random(0.7, 0.9)
       );
     } else {
       flowerBranches.push(this);
@@ -270,9 +284,57 @@ class Branch {
       this.growth = min(this.growth + growthStep, 1);
     }
 
+    // Grow the flower after the branch has partially appeared.
+    // The flower will not start blooming until the branch is at least 30% grown.
     if (this.hasFlower && this.growth > 0.3) {
-      this.flowerGrowth = min(this.flowerGrowth + growthStep * 1.2, 1);
+      // Gradually increase flower size over time.
+      // The growth speed is slightly faster than branch growth
+      // to create a more noticeable blooming effect.
+      this.flowerGrowth = min(
+        this.flowerGrowth + growthStep * 1.2,
+        1
+      );
     }
+    
+
+    // Once the flower has completely bloomed,
+    // it begins releasing petals at random intervals.
+    if (this.hasFlower && this.flowerGrowth >= 1) {
+
+      // Countdown timer controlling when the next petal falls.
+      // This prevents all petals from falling at the same moment.
+      this.petalTimer--;
+
+      // When the timer reaches zero,
+      // generate a new falling petal.
+      if (this.petalTimer <= 0) {
+
+        // Calculate the flower's current world position.
+        // The flower is attached to the tip of the branch,
+        // with a small random offset for a more natural appearance.
+        let flowerX =
+          this.x +
+          sin(this.angle) * this.length * this.growth +
+          this.flowerOffsetX;
+
+        let flowerY =
+          this.y +
+          cos(this.angle) * this.length * this.growth +
+          this.flowerOffsetY;
+
+        // Create a new falling petal at the flower location.
+        // The FallingPetal class will handle drifting,
+        // rotation and ground collision behaviour.
+        fallingPetals.push(
+          new FallingPetal(flowerX, flowerY)
+        );
+        // Reset the timer using a random value.
+        // Different flowers will therefore shed petals
+        // at slightly different rates.
+        this.petalTimer = int(random(40, 120));
+      }
+    }
+
 
     if (this.branchA !== null) {
       this.branchA.update(growthStep);
@@ -320,29 +382,75 @@ class Branch {
         let leafProgress = map(this.growth, 0.3, 1, 0, 1);
         leafProgress = constrain(leafProgress, 0, 1);
 
+        // Draw the leaf while it is still attached to the branch.
+        // Once leafFallStarted becomes true,
+        // this leaf will be converted into a FallingLeaf object.
+      if (!this.leafHasFallen) {
+
         push();
+
         translate(currentEndX, currentEndY);
+
         rotate(-this.angle);
+
         scale(leafProgress);
-        image(leafImage, -leafImage.width / 2, 0);
+
+        image(
+          leafImage,
+          -leafImage.width / 2,
+          0
+        );
+
         pop();
+      }
 
-        if (this.hasFlower) {
-          push();
+      // After the space key is pressed,
+      // create one FallingLeaf for each terminal branch.
+      if (
+        leafFallStarted &&
+        !this.leafHasFallen &&
+        this.growth >= 1
+      ) {
 
-          translate(
-            currentEndX + this.flowerOffsetX,
-            currentEndY + this.flowerOffsetY
-          );
+        fallingLeaves.push(
 
-          scale(this.flowerGrowth);
-          drawFlower(0, 0, this.flowerSize, this.flowerAngle);
+          new FallingLeaf(
+            currentEndX,
+            currentEndY,
+            this.angle,
+            random(0.8, 1.2)
+          )
 
-          pop();
-        }
+        );
+
+        // Prevent duplicate leaf creation.
+        this.leafHasFallen = true;
+      }
+
+
+
+      if (this.hasFlower) {
+        push();
+
+        translate(
+          currentEndX + this.flowerOffsetX,
+          currentEndY + this.flowerOffsetY
+        );
+
+        scale(this.flowerGrowth);
+
+        drawFlower(
+          0,
+          0,
+          this.flowerSize,
+          this.flowerAngle
+        );
+
+        pop();
       }
     }
   }
+}
 
   isPointNearBranch(px, py) {
     if (this.growth <= 0) return false;
@@ -367,5 +475,174 @@ class Branch {
     }
 
     return false;
+  }
+}
+
+class FallingPetal {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+
+    this.size = random(6, 14);
+
+    this.speedY = random(0.6, 1.8);
+    this.speedX = random(-0.5, 0.5);
+
+    this.angle = random(TWO_PI);
+    this.rotateSpeed = random(-0.04, 0.04);
+
+    this.noiseOffset = random(1000);
+
+    this.type = int(random(4));
+
+    this.r = random(245, 255);
+    this.g = random(150, 190);
+    this.b = random(180, 220);
+    this.alpha = random(170, 230);
+
+    this.onGround = false;
+  }
+
+  update() {
+    if (this.onGround) {
+      return;
+    }
+
+    if (this.type === 0) {
+      this.x += sin(frameCount * 0.03 + this.noiseOffset) * 0.8;
+      this.y += this.speedY;
+      this.angle += this.rotateSpeed;
+    }
+
+    if (this.type === 1) {
+      this.x += map(noise(this.noiseOffset), 0, 1, -1, 1);
+      this.y += this.speedY * 0.9;
+      this.angle += this.rotateSpeed * 2;
+      this.noiseOffset += 0.01;
+    }
+
+    if (this.type === 2) {
+      this.x += this.speedX + 0.8;
+      this.y += this.speedY * 1.4;
+      this.angle += this.rotateSpeed;
+    }
+
+    if (this.type === 3) {
+      this.x += map(noise(this.noiseOffset), 0, 1, -0.7, 0.7);
+      this.y += this.speedY * 0.6;
+      this.angle += this.rotateSpeed * 0.5;
+      this.noiseOffset += 0.005;
+    }
+
+    if (this.y > height - 35) {
+      this.y = height - 35;
+      this.onGround = true;
+    }
+  }
+
+  render() {
+    push();
+    translate(this.x, this.y);
+    rotate(this.angle);
+
+    noStroke();
+    fill(this.r, this.g, this.b, this.alpha);
+
+    beginShape();
+    vertex(0, -this.size);
+    bezierVertex(
+      this.size * 0.8,
+      -this.size * 0.5,
+      this.size * 0.7,
+      this.size * 0.7,
+      0,
+      this.size
+    );
+    bezierVertex(
+      -this.size * 0.7,
+      this.size * 0.7,
+      -this.size * 0.8,
+      -this.size * 0.5,
+      0,
+      -this.size
+    );
+    endShape(CLOSE);
+
+    pop();
+  }
+}
+
+class FallingLeaf {
+  constructor(x, y, angle, sizeValue) {
+    this.x = x;
+    this.y = y;
+
+    this.angle = angle;
+    this.rotateSpeed = random(-0.03, 0.03);
+
+    this.size = sizeValue;
+
+    this.speedY = random(0.7, 1.5);
+    this.speedX = random(-0.4, 0.4);
+
+    this.noiseOffset = random(1000);
+
+    this.yellowAmount = 0;
+    this.isFalling = false;
+    this.onGround = false;
+  }
+
+  update() {
+    if (this.onGround) {
+      return;
+    }
+
+    if (!this.isFalling) {
+      this.yellowAmount += 0.015;
+
+      if (this.yellowAmount >= 1) {
+        this.yellowAmount = 1;
+        this.isFalling = true;
+      }
+    } else {
+      this.x += map(noise(this.noiseOffset), 0, 1, -1, 1) + this.speedX;
+      this.y += this.speedY;
+      this.angle += this.rotateSpeed;
+      this.noiseOffset += 0.01;
+
+      if (this.y > height - 35) {
+        this.y = height - 35;
+        this.onGround = true;
+      }
+    }
+  }
+
+  render() {
+    let r = lerp(116, 190, this.yellowAmount);
+    let g = lerp(150, 125, this.yellowAmount);
+    let b = lerp(0, 20, this.yellowAmount);
+
+    push();
+    translate(this.x, this.y);
+    rotate(-this.angle);
+    scale(this.size);
+
+    noStroke();
+
+    fill(r, g, b);
+    beginShape();
+    vertex(6, 6);
+    bezierVertex(0, 12, 0, 12, 6, 18);
+    bezierVertex(12, 12, 12, 12, 6, 6);
+    endShape();
+
+    fill(r + 20, g + 20, b);
+    beginShape();
+    vertex(6, 9);
+    bezierVertex(0, 13, 0, 13, 6, 18);
+    bezierVertex(12, 13, 12, 13, 6, 9);
+    endShape();
+
+    pop();
   }
 }
