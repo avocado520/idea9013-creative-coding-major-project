@@ -1,38 +1,34 @@
 // timeMechanic.js
-// Controls time-based changes using the sketch's internal running time.
-// Controls time-based behaviours such as background colour, tree growth, and automatic blooming after user inactivity.
+// Manages the time-driven behaviour of the scene, including the day-night cycle,
+// sky object timing, tree growth speed, and inactivity-based auto blooming.
 
 class TimeMechanic {
   constructor() {
-    // Use millis() as the timing source so the cycle is based on real elapsed time.
+    // Store the start time once so all time-based effects share the same timeline.
     this.startTime = millis();
 
-    // Length of one full day-night loop.
+    // A shorter loop is used so the full day-night cycle can be seen during interaction.
     this.dayNightDuration = 30000;
 
-    // Used to detect when the user has stopped interacting with the tree.
+    // Track the last hover time to decide when the tree should bloom without user input.
     this.lastHoverTime = millis();
-
-    // After 5 seconds of inactivity, the tree can bloom automatically.
     this.autoBloomDelay = 5000;
 
-    // Colours for each stage of the simulated day.
+    // These colours define the mood of each stage in the simulated day.
     this.morningColor = color(150, 205, 255);
     this.dayColor = color(185, 225, 255);
     this.sunsetColor = color(255, 155, 105);
 
-    // Night colours are kept visible so the tree and flowers do not disappear.
+    // The night colours are brightened so the tree and flowers remain readable.
     this.duskColor = color(130, 95, 165);
     this.nightColor = color(60, 70, 115);
   }
 
   getBackgroundColor() {
-    let elapsedTime = millis() - this.startTime;
+    let progress = this.getCycleProgress();
 
-    // Loop the cycle continuously instead of stopping after one day-night pass.
-    let cycleTime = elapsedTime % this.dayNightDuration;
-    let progress = cycleTime / this.dayNightDuration;
-
+    // Split the loop into visual stages so the sky changes gradually
+    // instead of jumping between fixed colours.
     if (progress < 0.20) {
       let stageProgress = map(progress, 0, 0.20, 0, 1);
       return lerpColor(this.morningColor, this.dayColor, stageProgress);
@@ -52,58 +48,58 @@ class TimeMechanic {
   }
 
   getCycleProgress() {
-  let elapsedTime = millis() - this.startTime;
-  let cycleTime = elapsedTime % this.dayNightDuration;
+    let elapsedTime = millis() - this.startTime;
+    let cycleTime = elapsedTime % this.dayNightDuration;
 
-  // Return a 0–1 value for the current position in the day-night cycle.
-  return cycleTime / this.dayNightDuration;
-}
+    // Modulo keeps the cycle repeating instead of stopping after one full loop.
+    return cycleTime / this.dayNightDuration;
+  }
 
   isSunVisible() {
-  let progress = this.getCycleProgress();
+    let progress = this.getCycleProgress();
 
-  // Sun appears during the morning/day part of the cycle.
-  return progress < 0.52;
-}
+    // The sun belongs to the first half of the cycle: morning to late afternoon.
+    return progress < 0.52;
+  }
 
-isMoonVisible() {
-  let progress = this.getCycleProgress();
+  isMoonVisible() {
+    let progress = this.getCycleProgress();
 
-  // Moon appears during the evening/night part of the cycle.
-  return progress > 0.48;
-}
+    // The moon belongs to the second half of the cycle: evening to night.
+    return progress > 0.48;
+  }
 
-getSunProgress() {
-  let progress = this.getCycleProgress();
+  getSunProgress() {
+    let progress = this.getCycleProgress();
 
-  // Convert the sun's visible period into a 0–1 rising path value.
-  return constrain(map(progress, 0, 0.52, 0, 1), 0, 1);
-}
+    // Convert the sun's visible time range into a reusable 0–1 movement value.
+    return constrain(map(progress, 0, 0.52, 0, 1), 0, 1);
+  }
 
-getMoonProgress() {
-  let progress = this.getCycleProgress();
+  getMoonProgress() {
+    let progress = this.getCycleProgress();
 
-  // Convert the moon's visible period into a 0–1 rising path value.
-  return constrain(map(progress, 0.48, 1, 0, 1), 0, 1);
-}
+    // Convert the moon's visible time range into a reusable 0–1 movement value.
+    return constrain(map(progress, 0.48, 1, 0, 1), 0, 1);
+  }
 
   getTreeGrowthStep() {
-    // deltaTime keeps growth speed more stable across different frame rates.
+    // Using deltaTime makes growth depend on elapsed time rather than frame count.
     return constrain(deltaTime * 0.001, 0, 0.02);
   }
 
   recordUserHover() {
-    // Reset inactivity timing when the input system detects user interaction.
+    // Input calls this when the user hovers near the tree, delaying passive blooming.
     this.lastHoverTime = millis();
   }
 
   shouldAutoBloom() {
-    // True means the user has been inactive long enough to trigger passive blooming.
+    // Auto-bloom only happens after a period of no hover interaction.
     return millis() - this.lastHoverTime > this.autoBloomDelay;
   }
 
   reset() {
-    // Restart the timing system when a new tree is generated.
+    // Restart both the sky cycle and inactivity timer when the scene is regenerated.
     this.startTime = millis();
     this.lastHoverTime = millis();
   }
