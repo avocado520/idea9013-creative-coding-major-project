@@ -51,6 +51,42 @@ class TimeMechanic {
     }
   }
 
+  getCycleProgress() {
+  let elapsedTime = millis() - this.startTime;
+  let cycleTime = elapsedTime % this.dayNightDuration;
+
+  // Return a 0–1 value for the current position in the day-night cycle.
+  return cycleTime / this.dayNightDuration;
+}
+
+  isSunVisible() {
+  let progress = this.getCycleProgress();
+
+  // Sun appears from morning to sunset.
+  return progress < 0.58;
+}
+
+  isMoonVisible() {
+  let progress = this.getCycleProgress();
+
+  // Moon appears from dusk to early morning.
+  return progress > 0.42;
+}
+
+  getSunProgress() {
+  let progress = this.getCycleProgress();
+
+  // Convert the sun's visible period into a 0–1 movement value.
+  return constrain(map(progress, 0, 0.58, 0, 1), 0, 1);
+}
+
+  getMoonProgress() {
+  let progress = this.getCycleProgress();
+
+  // Convert the moon's visible period into a 0–1 movement value.
+  return constrain(map(progress, 0.42, 1, 0, 1), 0, 1);
+}
+
   getTreeGrowthStep() {
     // deltaTime keeps growth speed more stable across different frame rates.
     return constrain(deltaTime * 0.001, 0, 0.02);

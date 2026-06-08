@@ -40,6 +40,8 @@ function setup() {
 function draw() {
   background(timeMechanic.getBackgroundColor());
 
+  drawSkyObjects();
+
   // Draw natural uneven ground
   drawGround();
 
@@ -289,4 +291,111 @@ function drawFrontMound() {
 
   line(baseX + 96, groundY + 36, baseX + 102, groundY + 24);
   line(baseX + 88, groundY + 35, baseX + 84, groundY + 24);
+}
+
+function drawSkyObjects() {
+  // Get the current time progress from timeMechanic.
+  // This keeps sun and moon movement connected to the day-night cycle.
+  let progress = timeMechanic.getCycleProgress();
+
+  // Sun appears during the first part of the cycle.
+  if (timeMechanic.isSunVisible()) {
+    let sunProgress = timeMechanic.getSunProgress();
+
+    // Keep the sun centred horizontally to create a large horizon-like glow.
+    let sunX = width * 0.5;
+
+    // Move the sun from below the horizon to a higher point, then back down.
+    let sunY = lerp(height * 1.08, height * 0.72, sin(sunProgress * PI));
+
+    let sunStrength = sin(sunProgress * PI);
+
+    drawSun(sunX, sunY, sunStrength);
+  }
+
+  // Moon appears during the later part of the cycle.
+  if (timeMechanic.isMoonVisible()) {
+    let moonProgress = timeMechanic.getMoonProgress();
+
+    // Keep the moon centred horizontally so it mirrors the sun transition.
+    let moonX = width * 0.5;
+
+    // Move the moon in the same rising and falling motion.
+    let moonY = lerp(height * 1.08, height * 0.72, sin(moonProgress * PI));
+
+    let moonStrength = sin(moonProgress * PI);
+
+    drawMoon(moonX, moonY, moonStrength);
+  }
+}
+
+function drawSun(x, y, strength) {
+  push();
+  noStroke();
+
+  // Large atmospheric glow.
+  fill(255, 70, 10, 16 * strength);
+  circle(x, y, 520);
+
+  fill(255, 85, 15, 24 * strength);
+  circle(x, y, 420);
+
+  fill(255, 105, 25, 40 * strength);
+  circle(x, y, 330);
+
+  fill(255, 125, 35, 65 * strength);
+  circle(x, y, 260);
+
+  // Main glowing body.
+  fill(255, 90, 20, 235 * strength);
+  circle(x, y, 220);
+
+  // Warm inner light.
+  fill(255, 140, 45, 160 * strength);
+  circle(x, y, 175);
+
+  // Subtle highlight so the sun does not look completely flat.
+  fill(255, 190, 100, 85 * strength);
+  circle(x - 30, y - 32, 60);
+
+  pop();
+}
+
+function drawMoon(x, y, strength) {
+  push();
+  noStroke();
+
+  // Large cold glow around the moon.
+  fill(150, 175, 255, 12 * strength);
+  circle(x, y, 440);
+
+  fill(180, 200, 255, 20 * strength);
+  circle(x, y, 320);
+
+  fill(205, 215, 255, 32 * strength);
+  circle(x, y, 230);
+
+  // Main moon body.
+  fill(225, 230, 238, 235 * strength);
+  circle(x, y, 175);
+  
+  // Main craters.
+  fill(145, 155, 175, 88 * strength);
+  circle(x - 36, y - 26, 24);
+  circle(x + 38, y - 22, 18);
+  circle(x + 12, y + 38, 24);
+  circle(x - 42, y + 34, 15);
+  circle(x + 48, y + 30, 12);
+
+  // Crater highlights.
+  fill(245, 246, 250, 82 * strength);
+  circle(x - 41, y - 31, 10);
+  circle(x + 34, y - 27, 8);
+  circle(x + 7, y + 32, 9);
+
+  // Gentle surface highlight.
+  fill(255, 255, 255, 58 * strength);
+  circle(x - 32, y - 34, 48);
+
+  pop();
 }
