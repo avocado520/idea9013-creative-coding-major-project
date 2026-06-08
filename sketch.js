@@ -53,6 +53,8 @@ function draw() {
 
   tree.render();
 
+  drawFrontMound();
+  
   // Update and draw falling flower petals.
   for (let i = 0; i < fallingPetals.length; i++) {
     fallingPetals[i].update();
@@ -65,7 +67,7 @@ function draw() {
     fallingLeaves[i].render();
   }
 
-  drawFrontMound();
+
 }
 
 function keyPressed() {
