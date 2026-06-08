@@ -102,6 +102,29 @@ function getRandomLeafData() {
   };
 }
 
+function getRandomAttachedLeaves() {
+  let leaves = [];
+
+  let leafCount = int(random(8, 14));
+
+  for (let i = 0; i < leafCount; i++) {
+    leaves.push({
+      offsetX: random(-12, 12),
+      offsetY: random(-10, 8),
+
+      angle: random(-0.8, 0.8),
+
+      size: random(0.75, 1.15),
+
+      shouldFall: random(1) < 0.45,
+
+      hasFallen: false
+    });
+  }
+
+  return leaves;
+}
+
 
 // ------------------------------
 // Perlin noise movement

@@ -192,25 +192,8 @@ class Branch {
 
     this.leafHasFallen = false;
     
-    this.leaves = [];
+    this.leaves = getRandomAttachedLeaves();
     this.leafFallCreated = false;
-
-    let leafCount = int(random(8, 16));
-
-    for (let i = 0; i < leafCount; i++) {
-      this.leaves.push({
-        offsetX: random(-12, 12),
-        offsetY: random(-10, 8),
-
-        angle: random(-0.8, 0.8),
-
-        size: random(0.75, 1.15),
-
-        shouldFall: random(1) < 0.45,
-
-        hasFallen: false
-      });
-    }
 
     if (this.parent === null) {
       this.depth = 0;
