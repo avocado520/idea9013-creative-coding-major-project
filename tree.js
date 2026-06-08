@@ -178,13 +178,17 @@ class Branch {
     this.branchB = null;
 
     this.hasFlower = false;
-    this.flowerSize = random(0.85, 1.05);
-    this.flowerAngle = random(TWO_PI);
-    this.flowerOffsetX = random(-10, 10);
-    this.flowerOffsetY = random(-8, 8);
+
+    let flowerData = getRandomFlowerData();
+
+    this.flowerSize = flowerData.flowerSize;
+    this.flowerAngle = flowerData.flowerAngle;
+    this.flowerOffsetX = flowerData.flowerOffsetX;
+    this.flowerOffsetY = flowerData.flowerOffsetY;
+  
     this.flowerGrowth = 0;
 
-    this.petalTimer = int(random(30, 120));
+    this.petalTimer = flowerData.petalTimer;
 
     this.leafHasFallen = false;
 
@@ -211,23 +215,17 @@ class Branch {
 
       // Use different angle ranges at different depths.
       // This creates a more layered, uneven canopy instead of a perfectly symmetrical tree.
-      if (this.depth < 2) {
-        leftAngle = -0.20 + random(-0.08, 0.06);
-        rightAngle = 0.18 + random(-0.06, 0.08);
-      } else if (this.depth < 5) {
-        leftAngle = -0.34 + random(-0.12, 0.10);
-        rightAngle = 0.30 + random(-0.10, 0.12);
-      } else {
-        leftAngle = -0.48 + random(-0.16, 0.14);
-        rightAngle = 0.42 + random(-0.14, 0.16);
-      }
+      let branchAngles = getRandomBranchAngles(this.depth);
+
+      leftAngle = branchAngles.leftAngle;
+      rightAngle = branchAngles.rightAngle;
 
       this.branchA = new Branch(
         this,
         xB,
         yB,
         leftAngle,
-        this.length * random(0.6, 0.8)
+        this.length * getRandomLeftBranchLength()
       );
 
       this.branchB = new Branch(
@@ -235,7 +233,7 @@ class Branch {
         xB,
         yB,
         rightAngle,
-        this.length * random(0.7, 0.9)
+        this.length * getRandomRightBranchLength()
       );
     } else {
       flowerBranches.push(this);
@@ -440,27 +438,28 @@ class Branch {
 
 class FallingPetal {
   constructor(x, y) {
+
     this.x = x;
     this.y = y;
 
-    this.size = random(6, 14);
+    let petalData = getRandomPetalData();
 
-    this.speedY = random(0.6, 1.8);
-    this.speedX = random(-0.5, 0.5);
+    this.size = petalData.size;
 
-    this.angle = random(TWO_PI);
-    this.rotateSpeed = random(-0.04, 0.04);
+    this.speedY = petalData.speedY;
+    this.speedX = petalData.speedX;
 
-    this.noiseOffset = random(1000);
+    this.angle = petalData.angle;
+    this.rotateSpeed = petalData.rotateSpeed;
 
-    this.type = int(random(4));
+    this.noiseOffset = petalData.noiseOffset;
 
-    this.r = random(245, 255);
-    this.g = random(150, 190);
-    this.b = random(180, 220);
-    this.alpha = random(170, 230);
+    this.type = petalData.type;
 
-    this.onGround = false;
+    this.r = petalData.r;
+    this.g = petalData.g;
+    this.b = petalData.b;
+    this.alpha = petalData.alpha;
   }
 
   update() {
@@ -470,8 +469,10 @@ class FallingPetal {
         // find nearest audio rect by center-x distance
         let nearest = audioRects[0];
         let minDist = abs(this.x - nearest.cx);
+
         for (let i = 1; i < audioRects.length; i++) {
           let d = abs(this.x - audioRects[i].cx);
+
           if (d < minDist) {
             minDist = d;
             nearest = audioRects[i];
@@ -494,10 +495,10 @@ class FallingPetal {
     }
 
     if (this.type === 1) {
-      this.x += map(noise(this.noiseOffset), 0, 1, -1, 1);
+      this.x += getSoftNoiseDrift(this.noiseOffset);
       this.y += this.speedY * 0.9;
       this.angle += this.rotateSpeed * 2;
-      this.noiseOffset += 0.01;
+      this.noiseOffset = updateFastNoiseOffset(this.noiseOffset);
     }
 
     if (this.type === 2) {
@@ -507,12 +508,13 @@ class FallingPetal {
     }
 
     if (this.type === 3) {
-      this.x += map(noise(this.noiseOffset), 0, 1, -0.7, 0.7);
+      this.x += getSmallNoiseDrift(this.noiseOffset);
       this.y += this.speedY * 0.6;
       this.angle += this.rotateSpeed * 0.5;
-      this.noiseOffset += 0.005;
+      this.noiseOffset = updateSlowNoiseOffset(this.noiseOffset);
     }
 
+    // Stop the petal when it reaches the ground.
     if (this.y > height - 35) {
       this.y = height - 35;
       this.onGround = true;
@@ -557,14 +559,16 @@ class FallingLeaf {
     this.y = y;
 
     this.angle = angle;
-    this.rotateSpeed = random(-0.03, 0.03);
+    let leafData = getRandomLeafData();
+
+    this.rotateSpeed = leafData.rotateSpeed;
 
     this.size = sizeValue;
 
-    this.speedY = random(0.7, 1.5);
-    this.speedX = random(-0.4, 0.4);
+    this.speedY = leafData.speedY;
+    this.speedX = leafData.speedX;
 
-    this.noiseOffset = random(1000);
+    this.noiseOffset = leafData.noiseOffset;
 
     this.yellowAmount = 0;
     this.isFalling = false;
@@ -602,10 +606,10 @@ class FallingLeaf {
         this.isFalling = true;
       }
     } else {
-      this.x += map(noise(this.noiseOffset), 0, 1, -1, 1) + this.speedX;
+      this.x += getSoftNoiseDrift(this.noiseOffset) + this.speedX;
       this.y += this.speedY;
       this.angle += this.rotateSpeed;
-      this.noiseOffset += 0.01;
+      this.noiseOffset = updateFastNoiseOffset(this.noiseOffset);
 
       if (this.y > height - 35) {
         this.y = height - 35;
