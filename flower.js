@@ -1,125 +1,162 @@
-// This file controls the visual style of flowers.
-// The flower position is still decided by tree.js,
-// because flowers grow from the tips of tree branches.
-
-// Draw one blossom.
-// x: flower x position
-// y: flower y position
-// flowerSize: flower scale
-// flowerAngle: flower rotation
-/*function drawFlower(x, y, flowerSize, flowerAngle) {
-  push();
-
-  translate(x, y);
-  rotate(flowerAngle);
-  scale(flowerSize);
-  image(flowerImage, -flowerImage.width / 2, -flowerImage.height / 2);
-  
-  noStroke();
-
-  // Draw five soft pink petals.
-  for (let i = 0; i < 5; i++) {
-    push();
-
-    rotate((TWO_PI / 5) * i);
-
-    // Main petal shape.
-    fill(255, 205, 215);
-    ellipse(0, -7, 7, 13);
-
-    // Lighter inner petal detail.
-    fill(255, 232, 238, 180);
-    ellipse(0, -7, 3, 8);
-
-    pop();
-  }
-
-  // Draw the yellow flower center.
-  fill(245, 205, 80);
-  circle(0, 0, 5);
-
-  // Draw a small darker dot in the center.
-  fill(170, 110, 55);
-  circle(0, 0, 2);
-
-  // Add small pink details to make the flower look less flat.
-  fill(255, 125, 150);
-  circle(-3, -2, 1.5);
-  circle(3, 1, 1.5);
-
-  pop();
-}*/
-
 // flower.js
 // This file controls the visual style of flowers.
 // The flower position is still decided by tree.js,
 // because flowers grow from the tips of tree branches.
 
-// Cached flower image.
-// It is created once in setup() and reused every frame for better performance.
 let flowerImage;
 
 function createFlowerImage() {
-  let buffer = createGraphics(40, 40);
+  let buffer = createGraphics(50, 50);
 
   buffer.clear();
 
   buffer.push();
 
-  // Draw the flower from the centre of the graphics buffer.
-  // This makes it easier to rotate and scale the flower later.
-  buffer.translate(20, 20);
+  // Move the drawing origin to the centre.
+  buffer.translate(25, 25);
+
   buffer.noStroke();
 
-  // Draw five soft pink petals.
+  // Draw a very soft pale shadow behind the flower.
+  // This makes the blossom feel less flat.
+  buffer.fill(255, 190, 205, 45);
+  buffer.circle(0, 0, 30);
+
+  // Draw five slightly irregular petals.
   for (let i = 0; i < 5; i++) {
     buffer.push();
 
-    buffer.rotate((TWO_PI / 5) * i);
+    let petalAngle = (TWO_PI / 5) * i;
+    buffer.rotate(petalAngle);
 
-    // Main petal shape.
-    buffer.fill(255, 205, 215);
-    buffer.ellipse(0, -7, 7, 13);
+    // Main outer petal.
+    buffer.fill(255, 198, 210, 235);
 
-    // Lighter inner petal detail.
-    buffer.fill(255, 232, 238, 180);
-    buffer.ellipse(0, -7, 3, 8);
+    buffer.beginShape();
+    buffer.vertex(0, -3);
+
+    buffer.bezierVertex(
+      7,
+      -10,
+      8,
+      -18,
+      1,
+      -21
+    );
+
+    buffer.bezierVertex(
+      -7,
+      -18,
+      -8,
+      -10,
+      0,
+      -3
+    );
+
+    buffer.endShape(CLOSE);
+
+    // Inner highlight on each petal.
+    buffer.fill(255, 235, 240, 170);
+
+    buffer.beginShape();
+    buffer.vertex(0, -5);
+
+    buffer.bezierVertex(
+      3,
+      -10,
+      3,
+      -15,
+      0,
+      -17
+    );
+
+    buffer.bezierVertex(
+      -3,
+      -15,
+      -3,
+      -10,
+      0,
+      -5
+    );
+
+    buffer.endShape(CLOSE);
+
+    // A thin pink vein line.
+    buffer.stroke(255, 135, 155, 110);
+    buffer.strokeWeight(0.8);
+    buffer.noFill();
+
+    buffer.bezier(
+      0,
+      -5,
+      1,
+      -9,
+      1,
+      -13,
+      0,
+      -18
+    );
+
+    buffer.noStroke();
 
     buffer.pop();
   }
 
-  // Draw the yellow flower center.
-  buffer.fill(245, 205, 80);
-  buffer.circle(0, 0, 5);
+  // Small warmer pink marks near the centre.
+  buffer.fill(255, 135, 155, 180);
+  buffer.circle(-4, -2, 2);
+  buffer.circle(4, -1, 2);
+  buffer.circle(1, 4, 2);
 
-  // Draw a small darker dot in the center.
-  buffer.fill(170, 110, 55);
-  buffer.circle(0, 0, 2);
+  // Yellow flower centre.
+  buffer.fill(245, 205, 85);
+  buffer.circle(0, 0, 6);
 
-  // Add small pink details to make the flower look less flat.
-  buffer.fill(255, 125, 150);
-  buffer.circle(-3, -2, 1.5);
-  buffer.circle(3, 1, 1.5);
+  // Darker centre dot.
+  buffer.fill(145, 95, 45);
+  buffer.circle(0, 0, 2.5);
+
+  // Tiny stamens around the centre.
+  buffer.stroke(240, 160, 80, 180);
+  buffer.strokeWeight(1);
+
+  for (let i = 0; i < 6; i++) {
+    let a = (TWO_PI / 6) * i;
+    let x1 = cos(a) * 4;
+    let y1 = sin(a) * 4;
+    let x2 = cos(a) * 8;
+    let y2 = sin(a) * 8;
+
+    buffer.line(x1, y1, x2, y2);
+  }
+
+  buffer.noStroke();
+  buffer.fill(255, 210, 90);
+
+  for (let i = 0; i < 6; i++) {
+    let a = (TWO_PI / 6) * i;
+    buffer.circle(cos(a) * 8, sin(a) * 8, 1.5);
+  }
 
   buffer.pop();
 
   return buffer;
 }
 
-// Draw one blossom.
-// x: flower x position
-// y: flower y position
-// flowerSize: flower scale
-// flowerAngle: flower rotation
 function drawFlower(x, y, flowerSize, flowerAngle) {
   push();
 
   translate(x, y);
   rotate(flowerAngle);
-  scale(flowerSize);
 
-  // Reuse the cached flower image instead of redrawing every petal each frame.
-  image(flowerImage, -flowerImage.width / 2, -flowerImage.height / 2);
+  // Slightly reduce the base size so the flowers do not cover the tree too much.
+  scale(flowerSize * 0.75);
+
+  image(
+    flowerImage,
+    -flowerImage.width / 2,
+    -flowerImage.height / 2
+  );
 
   pop();
 }

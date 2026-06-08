@@ -38,6 +38,11 @@ function draw() {
   // Use timeMechanic to control tree growth speed.
   let growthStep = timeMechanic.getTreeGrowthStep();
   tree.update(growthStep);
+  // When the tree is fully grown,
+  // automatically start the leaf falling process.
+  if (tree.growth >= 1 && !leafFallStarted) {
+    leafFallStarted = true;
+  }
 
   // If the user has not hovered for 5 seconds,
   // add one flower and reset the inactivity timer.
@@ -48,8 +53,18 @@ function draw() {
 
   tree.render();
 
-  // Draw the soil mound after the tree,
-  // so it covers the lower trunk and makes the tree look planted.
+  // Update and draw falling flower petals.
+  for (let i = 0; i < fallingPetals.length; i++) {
+    fallingPetals[i].update();
+    fallingPetals[i].render();
+  }
+
+  // Update and draw falling leaves.
+  for (let i = 0; i < fallingLeaves.length; i++) {
+    fallingLeaves[i].update();
+    fallingLeaves[i].render();
+  }
+
   drawFrontMound();
 }
 
