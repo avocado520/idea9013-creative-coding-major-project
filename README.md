@@ -28,6 +28,25 @@
 
 ## Time-based
 
+The time-based mechanic controls how the scene changes over time.
+
+Applications include:
+
+* Day-night background colour cycle
+* Smooth transitions using `lerpColor()`
+* Tree growth controlled by `deltaTime`
+* 5-second no-hover auto-blooming
+* Connection with user input mechanic: hover interaction resets the auto-bloom timer
+* Sun and moon movement based on cycle progress
+* Time reset when the scene restarts
+
+---
+
+This mechanic uses `millis()` to track elapsed time. The background, tree growth, passive blooming, and sky objects all follow the same timing system.
+
+The input mechanic detects when the user hovers near the tree. The time mechanic records that interaction time and waits 5 seconds before triggering passive blooming.
+
+This helps the artwork feel like a living cycle rather than a static tree animation.
 
 ---
 
