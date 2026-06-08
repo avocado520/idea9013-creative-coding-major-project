@@ -295,46 +295,6 @@ class Branch {
         1
       );
     }
-    
-
-    // Once the flower has completely bloomed,
-    // it begins releasing petals at random intervals.
-    if (this.hasFlower && this.flowerGrowth >= 1) {
-
-      // Countdown timer controlling when the next petal falls.
-      // This prevents all petals from falling at the same moment.
-      this.petalTimer--;
-
-      // When the timer reaches zero,
-      // generate a new falling petal.
-      if (this.petalTimer <= 0) {
-
-        // Calculate the flower's current world position.
-        // The flower is attached to the tip of the branch,
-        // with a small random offset for a more natural appearance.
-        let flowerX =
-          this.x +
-          sin(this.angle) * this.length * this.growth +
-          this.flowerOffsetX;
-
-        let flowerY =
-          this.y +
-          cos(this.angle) * this.length * this.growth +
-          this.flowerOffsetY;
-
-        // Create a new falling petal at the flower location.
-        // The FallingPetal class will handle drifting,
-        // rotation and ground collision behaviour.
-        fallingPetals.push(
-          new FallingPetal(flowerX, flowerY)
-        );
-        // Reset the timer using a random value.
-        // Different flowers will therefore shed petals
-        // at slightly different rates.
-        this.petalTimer = int(random(40, 120));
-      }
-    }
-
 
     if (this.branchA !== null) {
       this.branchA.update(growthStep);

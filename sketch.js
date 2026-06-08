@@ -83,7 +83,6 @@ function mouseMoved() {
   // Pass the current mouse position to inputMechanic
   // so it can detect whether the user is hovering over the tree.
   inputMechanic.handleMouseMoved(mouseX, mouseY);
-  bloomFromMouseHover(mouseX, mouseY);
 }
 
 function mouseClicked() {
