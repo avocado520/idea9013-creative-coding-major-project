@@ -8,9 +8,19 @@ let tree;
 let windAngle = 0;
 let timeMechanic;
 
+let mic;
+let fft;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(RADIANS);
+
+  //allowing mic functionality and fft
+  mic = new p5.AudioIn();
+  mic.start();
+
+  fft = new p5.FFT(smoothing, numBins);
+  mic.connect(fft);
 
   // Create the time mechanic before using any time-based values.
   timeMechanic = new TimeMechanic();
@@ -22,30 +32,33 @@ function setup() {
 
   createNewTree();
 
+  //button for toggling backgroundSFX
   SFXToggle();
+
 }
 
 function draw() {
   background(timeMechanic.getBackgroundColor());
 
-  // Draw natural uneven ground.
+  // Draw natural uneven ground
   drawGround();
 
-  // Create gentle wind movement over time.
+  // Create gentle wind movement over time
   windAngle += 0.003;
   tree.windForce = sin(windAngle) * 0.02;
 
-  // Use timeMechanic to control tree growth speed.
+  // Use timeMechanic to control tree growth speed
   let growthStep = timeMechanic.getTreeGrowthStep();
   tree.update(growthStep);
+
   // When the tree is fully grown,
-  // automatically start the leaf falling process.
+  // automatically start the leaf falling process
   if (tree.growth >= 1 && !leafFallStarted) {
     leafFallStarted = true;
   }
 
   // If the user has not hovered for 5 seconds,
-  // add one flower and reset the inactivity timer.
+  // add one flower and reset the inactivity timer
   if (timeMechanic.shouldAutoBloom()) {
     addFlowerOnRandomBranch();
     timeMechanic.recordUserHover();
@@ -55,18 +68,20 @@ function draw() {
 
   drawFrontMound();
   
-  // Update and draw falling flower petals.
-  for (let i = 0; i < fallingPetals.length; i++) {
-    fallingPetals[i].update();
-    fallingPetals[i].render();
-  }
-
-  // Update and draw falling leaves.
+  // Update and draw falling leaves behind petals
   for (let i = 0; i < fallingLeaves.length; i++) {
     fallingLeaves[i].update();
     fallingLeaves[i].render();
   }
 
+  // Update and draw falling flower petals
+  for (let i = 0; i < fallingPetals.length; i++) {
+    fallingPetals[i].update();
+    fallingPetals[i].render();
+  }
+
+  //function controlling petal/leaf height based off mic input
+  micAudio();
 
 }
 
@@ -94,11 +109,11 @@ function mouseClicked() {
 }
 
 function windowResized() {
-  // Rebuild the tree when the browser size changes.
+  // Rebuild the tree when the browser size changes
   resizeCanvas(windowWidth, windowHeight);
   createNewTree();
 
-  // Reset the time mechanic so the scene timing starts cleanly after resizing.
+  // Reset the time mechanic so the scene timing starts cleanly after resizing
   timeMechanic.reset();
 }
 
@@ -110,14 +125,14 @@ function drawGround() {
 
   beginShape();
 
-  // Start from bottom-left.
+  // Start from bottom-left
   vertex(0, height);
 
-  // Add the first ground surface point.
+  // Add the first ground surface point
   let firstY = groundBaseY + map(noise(0), 0, 1, -18, 12);
   vertex(0, firstY);
 
-  // Draw uneven surface across the screen.
+  // Draw uneven surface across the screen
   for (let x = 0; x <= width; x += 20) {
     let noiseValue = noise(x * 0.01);
     let groundY = groundBaseY + map(noiseValue, 0, 1, -18, 12);
@@ -125,17 +140,17 @@ function drawGround() {
     vertex(x, groundY);
   }
 
-  // Force the final surface point to reach the right edge.
+  // Force the final surface point to reach the right edge
   let lastNoiseValue = noise(width * 0.01);
   let lastGroundY = groundBaseY + map(lastNoiseValue, 0, 1, -18, 12);
   vertex(width, lastGroundY);
 
-  // Fill down to bottom-right.
+  // Fill down to bottom-right
   vertex(width, height);
 
   endShape(CLOSE);
 
-  // Draw top soil line.
+  // Draw top soil line
   stroke(155, 105, 65);
   strokeWeight(5);
   noFill();
