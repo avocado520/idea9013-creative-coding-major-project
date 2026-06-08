@@ -59,6 +59,27 @@ This ensures every generated tree is unique.
 
 ## User input
 
+The user input mechanic lets users interact directly with the tree using their mouse.
+
+Applications include:
+
+* Hovering over branches to trigger flowers to bloom near the cursor
+* Clicking on a flower to break it apart into falling petals
+* Pressing space to regenerate a new randomly shaped tree
+
+This creates a responsive and living artwork where the user actively shapes
+the growth and decay of the tree, rather than watching a passive animation.
+
+---
+
+The input mechanic connects with the other mechanics in the project:
+
+* Hover blooming resets the time mechanic's auto-bloom timer
+* Fallen petals accumulate on the ground and later react to audio input
+* Space key also resets the background day-night cycle
+
+Together these interactions form a continuous cycle of growth, bloom, and decay.
+
 ---
 
 
@@ -78,12 +99,12 @@ This ensures every generated tree is unique.
 
 # 👥 Mechanic Ownership
 
-| Team Member | Mechanic                  | Description                                                                                                           |
-| ----------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Member A    | Audio                     |                                                                                                                       |
-| Member B    | Time-Based Events         |                                                                                                                       |
-| Member C    | Perlin Noise & Randomness |                                                                                                                       |
-| Member D    | User Input                |                                                                                                                       |
+| Team Member        | Mechanic                  | Description                                                                                                           |
+| -----------        | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Fabiana Fonseca    | Audio                     |                                                                                                                       |
+| Jiayi Hou          | Time-Based Events         |                                                                                                                       |
+| Chunyu Zhao        | Perlin Noise & Randomness |                                                                                                                       |
+| Guanghan Li        | User Input                |                                                                                                                       |
 
 ---
 
