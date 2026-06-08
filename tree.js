@@ -464,10 +464,29 @@ class FallingPetal {
   }
 
   update() {
+    // If petal already on the ground, follow the nearest audio rectangle y (if available)
     if (this.onGround) {
+      if (typeof audioRects !== 'undefined' && audioRects.length > 0) {
+        // find nearest audio rect by center-x distance
+        let nearest = audioRects[0];
+        let minDist = abs(this.x - nearest.cx);
+        for (let i = 1; i < audioRects.length; i++) {
+          let d = abs(this.x - audioRects[i].cx);
+          if (d < minDist) {
+            minDist = d;
+            nearest = audioRects[i];
+          }
+        }
+
+        // Smoothly move toward the rectangle's y (match top of rect)
+        this.y = lerp(this.y, nearest.y, 0.18);
+        this.angle += this.rotateSpeed * 0.3;
+      }
+
       return;
     }
 
+    // Falling motion while not on ground
     if (this.type === 0) {
       this.x += sin(frameCount * 0.03 + this.noiseOffset) * 0.8;
       this.y += this.speedY;
@@ -553,7 +572,25 @@ class FallingLeaf {
   }
 
   update() {
+    // If leaf already on the ground, follow the nearest audio rectangle y (if available)
     if (this.onGround) {
+      if (typeof audioOutlineRects !== 'undefined' && audioOutlineRects.length > 0) {
+        // find nearest audio rect by center-x distance
+        let nearest = audioOutlineRects[0];
+        let minDist = abs(this.x - nearest.cx);
+        for (let i = 1; i < audioOutlineRects.length; i++) {
+          let d = abs(this.x - audioOutlineRects[i].cx);
+          if (d < minDist) {
+            minDist = d;
+            nearest = audioOutlineRects[i];
+          }
+        }
+
+        // Smoothly move toward the rectangle's y (match top of rect)
+        this.y = lerp(this.y, nearest.y, 0.18);
+        this.angle += this.rotateSpeed * 0.3;
+      }
+
       return;
     }
 
