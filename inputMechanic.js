@@ -1,9 +1,12 @@
+// inputMechanic.js
+// Handles all user input: keyboard, mouse hover, and mouse click.
+
 class InputMechanic {
   constructor() {
     this.lastBloomTime = 0;
-    this.bloomCooldown = 200;
+    this.bloomCooldown = 200; // Minimum time between each hover-triggered bloom.
     this.lastClickTime = 0;
-    this.clickCooldown = 2000; // single click can only be triggered every 2 seconds to prevent spamming.
+    this.clickCooldown = 2000; // Cooldown after a click to prevent immediate re-blooming.
   }
   handleKeyPressed(keyValue) {
     if (keyValue === ' ') {
@@ -14,9 +17,11 @@ class InputMechanic {
   handleMouseMoved(mx, my) {
     if (isNearBranch(mx, my)) {
       let now = millis();
+      // Skip blooming if the user just clicked, to avoid instant regrowth.
       if (now - this.lastClickTime < this.clickCooldown) return; // Prevent triggering bloom if a click was recently made.
 
-      if (now - this.lastBloomTime > 200) { // If the user has not hovered for 0.2 seconds, trigger a bloom.
+      // Trigger a bloom at most once every bloomCooldown milliseconds.
+      if (now - this.lastBloomTime > this.bloomCooldown) { // If the user has not hovered for the cooldown period, trigger a bloom.
         this.lastBloomTime = now;
         addFlowerNearMouse(mx, my); // Add a flower near the mouse position on the tree.
         timeMechanic.recordUserHover();
@@ -24,7 +29,7 @@ class InputMechanic {
     }
   }
   handleMouseClicked(mx, my) {
-    // after clicking, the petals will start to fall for a while.
+    // Record click time to pause hover-blooming briefly after a click.
     this.lastClickTime = millis(); // Record the time of the click to enforce cooldown on bloom triggering.
     triggerFlowerClick(tree, mx, my);
   }
@@ -32,10 +37,12 @@ class InputMechanic {
 
 let inputMechanic = new InputMechanic();
 
+// Returns true if the mouse is close enough to any branch node.
 function isNearBranch(mx, my) {
   return checkBranch(tree, mx, my);
 }
 
+// Recursively checks all branches for proximity to the mouse.
 function checkBranch(branch, mx, my) {
   if (branch === null) return false;
   let d = dist(mx, my, branch.x, branch.y);
@@ -45,6 +52,7 @@ function checkBranch(branch, mx, my) {
 }
 
 
+// Removes a clicked flower and releases petals from its position.
 function triggerFlowerClick(branch, mx, my) {
   if (branch === null) return;
 
@@ -66,6 +74,7 @@ function triggerFlowerClick(branch, mx, my) {
   triggerFlowerClick(branch.branchB, mx, my);
 }
 
+// Blooms the nearest terminal branch within 150px of the mouse.
 function addFlowerNearMouse(mx, my) {
   // Find the closest terminal branch to the mouse
   let closest = null;
