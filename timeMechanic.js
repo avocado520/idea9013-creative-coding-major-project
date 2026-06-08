@@ -1,32 +1,35 @@
 // timeMechanic.js
 // Controls time-based changes using the sketch's internal running time.
+// Controls time-based behaviours such as background colour, tree growth, and automatic blooming after user inactivity.
 
 class TimeMechanic {
   constructor() {
-    // Store the start time so the colour transition can be based on elapsed time.
+    // Use millis() as the timing source so the cycle is based on real elapsed time.
     this.startTime = millis();
 
-    // Duration of one full day-night cycle.
+    // Length of one full day-night loop.
     this.dayNightDuration = 30000;
 
-    // Store the last time the user hovered over the tree.
+    // Used to detect when the user has stopped interacting with the tree.
     this.lastHoverTime = millis();
 
-    // Auto-bloom will trigger after 5 seconds without hover.
+    // After 5 seconds of inactivity, the tree can bloom automatically.
     this.autoBloomDelay = 5000;
 
-    // Key colours for the simulated day cycle.
+    // Colours for each stage of the simulated day.
     this.morningColor = color(150, 205, 255);
     this.dayColor = color(185, 225, 255);
     this.sunsetColor = color(255, 155, 105);
-    this.duskColor = color(115, 80, 155);
-    this.nightColor = color(20, 24, 45);
+
+    // Night colours are kept visible so the tree and flowers do not disappear.
+    this.duskColor = color(130, 95, 165);
+    this.nightColor = color(60, 70, 115);
   }
 
   getBackgroundColor() {
     let elapsedTime = millis() - this.startTime;
 
-    // Use modulo so the cycle repeats instead of stopping at night.
+    // Loop the cycle continuously instead of stopping after one day-night pass.
     let cycleTime = elapsedTime % this.dayNightDuration;
     let progress = cycleTime / this.dayNightDuration;
 
@@ -49,22 +52,22 @@ class TimeMechanic {
   }
 
   getTreeGrowthStep() {
-    // Convert frame time into a growth amount for smoother tree growth.
+    // deltaTime keeps growth speed more stable across different frame rates.
     return constrain(deltaTime * 0.001, 0, 0.02);
   }
 
   recordUserHover() {
-    // Reset the inactivity timer when input detects hover.
+    // Reset inactivity timing when the input system detects user interaction.
     this.lastHoverTime = millis();
   }
 
   shouldAutoBloom() {
-    // Check whether the user has not hovered for 5 seconds.
+    // True means the user has been inactive long enough to trigger passive blooming.
     return millis() - this.lastHoverTime > this.autoBloomDelay;
   }
 
   reset() {
-    // Restart both the background cycle and the hover timer.
+    // Restart the timing system when a new tree is generated.
     this.startTime = millis();
     this.lastHoverTime = millis();
   }
