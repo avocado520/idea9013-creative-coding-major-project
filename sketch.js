@@ -294,24 +294,61 @@ function drawFrontMound() {
 }
 
 function drawSkyObjects() {
-  // Get the current time progress from timeMechanic.
-  // This keeps sun and moon movement connected to the day-night cycle.
-  let progress = timeMechanic.getCycleProgress();
-
-  // Sun appears during the first part of the cycle.
+  // Sun and moon use the same day-night cycle as the background.
+  // In Sydney, their path is represented as rising from the right side
+  // and moving upward across the sky.
   if (timeMechanic.isSunVisible()) {
     let sunProgress = timeMechanic.getSunProgress();
 
-    // Keep the sun centred horizontally to create a large horizon-like glow.
-    let sunX = width * 0.5;
+    // Make the movement faster near the beginning,
+    // so the sun enters the scene earlier.
+    let easedSunProgress = easeInOutSmooth(sunProgress);
 
-    // Move the sun from below the horizon to a higher point, then back down.
-    let sunY = lerp(height * 1.08, height * 0.72, sin(sunProgress * PI));
+    // Rise from the lower-right area and disappear higher in the sky.
+    let sunX = lerp(width * 0.82, width * 0.48, easedSunProgress);
+    let sunY = lerp(height * 0.95, height * 0.22, easedSunProgress);
 
-    let sunStrength = sin(sunProgress * PI);
+    // Fade in quickly, then fade out while still high in the sky.
+    let sunStrength = getSkyObjectStrength(sunProgress);
 
     drawSun(sunX, sunY, sunStrength);
   }
+
+  if (timeMechanic.isMoonVisible()) {
+    let moonProgress = timeMechanic.getMoonProgress();
+
+    // Use the same natural rising motion for the moon.
+    let easedMoonProgress = easeInOutSmooth(moonProgress);
+
+    // Rise from the lower-right area and fade out in the upper sky.
+    let moonX = lerp(width * 0.82, width * 0.48, easedMoonProgress);
+    let moonY = lerp(height * 0.95, height * 0.22, easedMoonProgress);
+
+    // Fade in and out so the moon does not suddenly pop on/off.
+    let moonStrength = getSkyObjectStrength(moonProgress);
+
+    drawMoon(moonX, moonY, moonStrength);
+  }
+}
+
+function easeInOutSmooth(value) {
+  value = constrain(value, 0, 1);
+
+  // Smooth acceleration and deceleration.
+  return value * value * (3 - 2 * value);
+}
+
+function getSkyObjectStrength(progress) {
+  // Fade in from 0 so the sun/moon does not pop into view.
+  let fadeIn = constrain(map(progress, 0, 0.22, 0, 1), 0, 1);
+
+  // Fade out near the end while still in the sky.
+  let fadeOut = constrain(map(progress, 0.78, 1, 1, 0), 0, 1);
+
+  return fadeIn * fadeOut;
+}
+
+    drawSun(sunX, sunY, sunStrength);
 
   // Moon appears during the later part of the cycle.
   if (timeMechanic.isMoonVisible()) {
@@ -327,7 +364,7 @@ function drawSkyObjects() {
 
     drawMoon(moonX, moonY, moonStrength);
   }
-}
+
 
 function drawSun(x, y, strength) {
   push();

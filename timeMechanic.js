@@ -62,29 +62,29 @@ class TimeMechanic {
   isSunVisible() {
   let progress = this.getCycleProgress();
 
-  // Sun appears from morning to sunset.
-  return progress < 0.58;
+  // Sun appears during the morning/day part of the cycle.
+  return progress < 0.52;
 }
 
-  isMoonVisible() {
+isMoonVisible() {
   let progress = this.getCycleProgress();
 
-  // Moon appears from dusk to early morning.
-  return progress > 0.42;
+  // Moon appears during the evening/night part of the cycle.
+  return progress > 0.48;
 }
 
-  getSunProgress() {
+getSunProgress() {
   let progress = this.getCycleProgress();
 
-  // Convert the sun's visible period into a 0–1 movement value.
-  return constrain(map(progress, 0, 0.58, 0, 1), 0, 1);
+  // Convert the sun's visible period into a 0–1 rising path value.
+  return constrain(map(progress, 0, 0.52, 0, 1), 0, 1);
 }
 
-  getMoonProgress() {
+getMoonProgress() {
   let progress = this.getCycleProgress();
 
-  // Convert the moon's visible period into a 0–1 movement value.
-  return constrain(map(progress, 0.42, 1, 0, 1), 0, 1);
+  // Convert the moon's visible period into a 0–1 rising path value.
+  return constrain(map(progress, 0.48, 1, 0, 1), 0, 1);
 }
 
   getTreeGrowthStep() {
