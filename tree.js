@@ -291,7 +291,7 @@ class Branch {
       // The growth speed is slightly faster than branch growth
       // to create a more noticeable blooming effect.
       this.flowerGrowth = min(
-        this.flowerGrowth + growthStep * 1.2,
+        this.flowerGrowth + growthStep * 4,
         1
       );
     }
