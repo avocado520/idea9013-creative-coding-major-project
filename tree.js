@@ -191,6 +191,26 @@ class Branch {
     this.petalTimer = flowerData.petalTimer;
 
     this.leafHasFallen = false;
+    
+    this.leaves = [];
+    this.leafFallCreated = false;
+
+    let leafCount = int(random(8, 16));
+
+    for (let i = 0; i < leafCount; i++) {
+      this.leaves.push({
+        offsetX: random(-12, 12),
+        offsetY: random(-10, 8),
+
+        angle: random(-0.8, 0.8),
+
+        size: random(0.75, 1.15),
+
+        shouldFall: random(1) < 0.45,
+
+        hasFallen: false
+      });
+    }
 
     if (this.parent === null) {
       this.depth = 0;
@@ -343,46 +363,56 @@ class Branch {
         // Draw the leaf while it is still attached to the branch.
         // Once leafFallStarted becomes true,
         // this leaf will be converted into a FallingLeaf object.
-      if (!this.leafHasFallen) {
+      for (let i = 0; i < this.leaves.length; i++) {
+        let leaf = this.leaves[i];
 
-        push();
+        if (!leaf.hasFallen) {
+          push();
 
-        translate(currentEndX, currentEndY);
+          translate(
+            currentEndX + leaf.offsetX * leafProgress,
+            currentEndY + leaf.offsetY * leafProgress
+          );
 
-        rotate(-this.angle);
+          rotate(-this.angle + leaf.angle);
 
-        scale(leafProgress);
+          scale(leafProgress * leaf.size);
 
-        image(
-          leafImage,
-          -leafImage.width / 2,
-          0
-        );
+          image(
+            leafImage,
+            -leafImage.width / 2,
+            0
+          );
 
-        pop();
+          pop();
+        }
       }
 
       // After the space key is pressed,
       // create one FallingLeaf for each terminal branch.
       if (
         leafFallStarted &&
-        !this.leafHasFallen &&
+        !this.leafFallCreated &&
         this.growth >= 1
       ) {
+        for (let i = 0; i < this.leaves.length; i++) {
+          let leaf = this.leaves[i];
 
-        fallingLeaves.push(
+          if (leaf.shouldFall) {
+            fallingLeaves.push(
+              new FallingLeaf(
+                currentEndX + leaf.offsetX,
+                currentEndY + leaf.offsetY,
+                this.angle + leaf.angle,
+                leaf.size
+              )
+            );
 
-          new FallingLeaf(
-            currentEndX,
-            currentEndY,
-            this.angle,
-            random(0.8, 1.2)
-          )
+            leaf.hasFallen = true;
+          }
+        }
 
-        );
-
-        // Prevent duplicate leaf creation.
-        this.leafHasFallen = true;
+        this.leafFallCreated = true;
       }
 
 
