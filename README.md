@@ -247,7 +247,6 @@ project-folder
 6. **Make some noise** — speak or play music near your microphone and watch the fallen petals and leaves bounce in response to the sound.
 
 7. **Wait and watch** — if you stop interacting, the tree will slowly continue blooming on its own every 5 seconds. The background also gradually shifts through a full day-night cycle.
-8. 
 
 ## Video Documentation
 
