@@ -11,6 +11,21 @@ We were particularly inspired by the way real trees change over time: branches g
 The final project combines these observations with generative art techniques, creating a digital tree that grows, blooms, sheds leaves, and responds to user interaction and sound. Through this process, we transformed an everyday element of our environment into an interactive experience.
 
 ## Visual References
+Our visual style combines organic growth, vibrant seasonal colors, and natural motion. The tree serves as the central structure, while flowers and petals introduce contrast, softness, and visual richness. 
+
+### Generative Tree Reference
+
+Inspired by the OpenProcessing Tree Project, we adopt a procedural tree structure that grows organically from the ground upward. The branching system creates a natural and unpredictable silhouette, allowing the tree to feel alive and continuously evolving rather than statically drawn.
+![Tree Inspiration](assets/tree-reference.png)
+
+### Flower and Petal Motion Reference
+
+Inspired by falling flower animations, we use softly drifting petals that rotate, sway, and descend naturally through space. The movement emphasizes lightness, fragility, and the temporary nature of blooming flowers.
+![Flower Inspiration](assets/falling-flower-reference.jpg)
+
+### Audio Part
+
+
 
 
 
