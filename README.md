@@ -91,30 +91,30 @@ This ensures every generated tree is unique.
 
 ---
 
-## User input
+## User Input
 
-The user input mechanic lets users interact directly with the tree using their mouse.
+The user input mechanic allows users to interact directly with the tree using their mouse and keyboard.
 
 Applications include:
 
-* Hovering over branches to trigger flowers to bloom near the cursor
-* Clicking on a flower to break it apart into falling petals
-* Pressing space to regenerate a new randomly shaped tree
-
-This creates a responsive and living artwork where the user actively shapes
-the growth and decay of the tree, rather than watching a passive animation.
+* Moving the mouse over tree branches triggers nearby flowers to bloom at the closest terminal branch
+* Clicking on a fully bloomed flower breaks it apart into falling petals
+* Pressing the space bar regenerates a new randomly shaped tree and resets the background cycle
 
 ---
 
-The input mechanic connects with the other mechanics in the project:
-
-* Hover blooming resets the time mechanic's auto-bloom timer
-* Fallen petals accumulate on the ground and later react to audio input
-* Space key also resets the background day-night cycle
-
-Together these interactions form a continuous cycle of growth, bloom, and decay.
+* `mouseMoved()` fires every frame the mouse moves, passing the cursor position to the input mechanic for hover detection
+* `mouseClicked()` fires on each click, used to check whether the cursor is close enough to a flower to trigger petal release
+* `keyPressed()` detects the space bar to call `createNewTree()` and `timeMechanic.reset()`
+* `dist()` compares the mouse position against every terminal branch node to find the closest one within a 150px radius
+* `millis()` drives two cooldown timers — one limits how frequently hover can trigger a new bloom (200ms), and one prevents immediate re-blooming after a click (2000ms)
+* The flower's actual screen position is calculated using `sin()` and `cos()` with the branch angle and growth value, so the click hit area precisely matches what is visible on screen
+* Hover interaction calls `timeMechanic.recordUserHover()` to reset the auto-bloom timer, connecting the user input mechanic with the time-based mechanic
 
 ---
+
+A bloom cooldown and post-click cooldown work together to prevent accidental
+flower spam while keeping the interaction feeling responsive and natural.
 
 
 # 🎮 Interaction Instructions
