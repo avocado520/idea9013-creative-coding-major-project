@@ -168,7 +168,7 @@ flower spam while keeping the interaction feeling responsive and natural.
 | Team Member        | Mechanic                  | Description                                                                                                           |
 | -----------        | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | Fabiana Fonseca    | Audio                     |  SFX to increase user immersion and mic input used to reanimate fallen petals and leaves.                                                                                                                    |
-| Jiayi Hou          | Time-Based Events         |                                                                                                                       |
+| Jiayi Hou          | Time-Based Events         |  Time-based system controlling the day-night background cycle, sun and moon movement, deltaTime tree growth, and 5-second no-hover auto-blooming.                                                                                                                   |
 | Chunyu Zhao        | Perlin Noise & Randomness |                                                                                                                       |
 | Guanghan Li        | User Input                |  Mouse hover to bloom flowers on branches, click flowers to release petals, space bar to regenerate the tree.         |
 
@@ -184,6 +184,7 @@ Code works by pushing arrays from fft rectangles that then get referenced by xpo
 
 **Time-Based** - _Jiayi Hou_
 
+ChatGPT was used to help refine the written explanation of the time-based mechanic and check the accuracy of terms such as `millis()`, `deltaTime`, and `lerpColor()`. The final implementation, including the day-night cycle, sun and moon timing, tree growth, and no-hover auto-blooming, was manually integrated and adjusted within the project.
 
 **Perlin Noise & Randomness** - _Chunyu Zhao_
 
