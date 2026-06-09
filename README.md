@@ -11,11 +11,11 @@ We were particularly inspired by the way real trees change over time: branches g
 The final project combines these observations with generative art techniques, creating a digital tree that grows, blooms, sheds leaves, and responds to user interaction and sound. Through this process, we transformed an everyday element of our environment into an interactive experience.
 
 ## Visual References
-Our visual style combines organic growth, vibrant seasonal colors, and natural motion. The tree serves as the central structure, while flowers and petals introduce contrast, softness, and visual richness. 
+Our visual style combines organic growth, vibrant seasonal colors, and natural motion. The tree serves as the central structure, while flowers and petals introduce contrast, softness, and visual richness. The introduction of audio, both in sound effects and input, bring a sense of play and whimsy reminiscent of childhood.
 
 ### Generative Tree Reference
 
-Inspired by the OpenProcessing Tree Project, we adopt a procedural tree structure that grows organically from the ground upward. The branching system creates a natural and unpredictable silhouette, allowing the tree to feel alive and continuously evolving rather than statically drawn.
+Inspired by the OpenProcessing Tree Project, we've adopted a procedural tree structure that grows organically from the ground upward. The branching system creates a natural and unpredictable silhouette, allowing the tree to feel alive and continuously evolving rather than statically drawn.
 ![Tree Inspiration](assets/tree-reference.png)
 
 ### Flower and Petal Motion Reference
@@ -23,11 +23,10 @@ Inspired by the OpenProcessing Tree Project, we adopt a procedural tree structur
 Inspired by falling flower animations, we use softly drifting petals that rotate, sway, and descend naturally through space. The movement emphasizes lightness, fragility, and the temporary nature of blooming flowers.
 ![Flower Inspiration](assets/falling-flower-reference.jpg)
 
-### Audio Part
+### Petal and Leaf Audio Reactive Movement
 
-
-
-
+We were inspired by the playfulness of bouncing motion. The movement in the piece thus far is very organic and natural, but the audio mic input brings in a level of gamification that lends itself well to the whismy of bouncing motion.
+![Motion Reference 1](assets/movementInspo1.GIF) ![Motion Reference 2](assets/movementInspo2.gif) ![Motion Reference 3](assets/movementInspo3.GIF) 
 
 
 ---
@@ -283,6 +282,9 @@ project-folder
 │   ├── StartingChime.mp3
 │   ├── storegraphic-soft-wind-316392.mp3
 │   ├── falling-flower-reference.jpg
+│   ├── movementInspo1.GIF
+│   ├── movementInspo2.gif
+│   ├── movementInspo3.GIF
 │   ├── StyleInspo.png
 │   ├── Time-Based.png
 │   └── tree-reference.png
