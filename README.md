@@ -140,7 +140,7 @@ flower spam while keeping the interaction feeling responsive and natural.
 | Fabiana Fonseca    | Audio                     |  SFX to increase user immersion and mic input used to reanimate fallen petals and leaves.                                                                                                                    |
 | Jiayi Hou          | Time-Based Events         |                                                                                                                       |
 | Chunyu Zhao        | Perlin Noise & Randomness |                                                                                                                       |
-| Guanghan Li        | User Input                |                                                                                                                       |
+| Guanghan Li        | User Input                |  Mouse hover to bloom flowers on branches, click flowers to release petals, space bar to regenerate the tree.         |
 
 ---
 
@@ -230,11 +230,24 @@ project-folder
 
 ---
 
-# 🎥 Demonstration
+# 🎥 Interaction Instructions
 
-## Live Demo
+## User Instructions
 
-(Add GitHub Pages link here)
+1. **Wait for the tree to grow** — the tree will slowly grow from the ground up on its own.
+
+2. **Move your mouse over the branches** — flowers will bloom near your cursor as you hover over the tree.
+
+3. **Click on a flower** — the flower will break apart into falling petals.
+
+4. **Press Space** — regenerates a brand new randomly shaped tree and resets the background cycle.
+
+5. **Click "Play Background Audio"** or **press Space** to start the ambient rustling sound effects.
+
+6. **Make some noise** — speak or play music near your microphone and watch the fallen petals and leaves bounce in response to the sound.
+
+7. **Wait and watch** — if you stop interacting, the tree will slowly continue blooming on its own every 5 seconds. The background also gradually shifts through a full day-night cycle.
+8. 
 
 ## Video Documentation
 
