@@ -213,7 +213,7 @@ ChatGPT was used to help refine the written explanation of the time-based mechan
 
 
 **User Input** - _Guanghan Li_
-
+Claude was used to help debug script load order conflicts and refine the hover and click interaction logic in inputMechanic.js. The final implementation, including branch proximity detection using dist() and cooldown timers using millis(), was manually reviewed and integrated into the project.
 
 
 ---
