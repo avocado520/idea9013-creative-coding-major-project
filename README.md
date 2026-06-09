@@ -11,11 +11,11 @@ We were particularly inspired by the way real trees change over time: branches g
 The final project combines these observations with generative art techniques, creating a digital tree that grows, blooms, sheds leaves, and responds to user interaction and sound. Through this process, we transformed an everyday element of our environment into an interactive experience.
 
 ## Visual References
-Our visual style combines organic growth, vibrant seasonal colors, and natural motion. The tree serves as the central structure, while flowers and petals introduce contrast, softness, and visual richness. The introduction of audio, both in sound effects and input, bring a sense of play and whimsy reminiscent of childhood.
+Our visual style combines organic growth, vibrant seasonal colors, and natural motion. The tree serves as the central structure, while flowers and petals introduce contrast, softness, and visual richness. 
 
 ### Generative Tree Reference
 
-Inspired by the OpenProcessing Tree Project, we've adopted a procedural tree structure that grows organically from the ground upward. The branching system creates a natural and unpredictable silhouette, allowing the tree to feel alive and continuously evolving rather than statically drawn.
+Inspired by the OpenProcessing Tree Project, we adopt a procedural tree structure that grows organically from the ground upward. The branching system creates a natural and unpredictable silhouette, allowing the tree to feel alive and continuously evolving rather than statically drawn.
 ![Tree Inspiration](assets/tree-reference.png)
 
 ### Flower and Petal Motion Reference
@@ -23,10 +23,11 @@ Inspired by the OpenProcessing Tree Project, we've adopted a procedural tree str
 Inspired by falling flower animations, we use softly drifting petals that rotate, sway, and descend naturally through space. The movement emphasizes lightness, fragility, and the temporary nature of blooming flowers.
 ![Flower Inspiration](assets/falling-flower-reference.jpg)
 
-### Petal and Leaf Audio Reactive Movement
+### Audio Part
 
-We were inspired by the playfulness of bouncing motion. The movement in the piece thus far is very organic and natural, but the audio mic input brings in a level of gamification that lends itself well to the whismy of bouncing motion.
-![Motion Reference 1](assets/movementInspo1.GIF) ![Motion Reference 2](assets/movementInspo2.gif) ![Motion Reference 3](assets/movementInspo3.GIF) 
+
+
+
 
 
 ---
@@ -170,21 +171,6 @@ A bloom cooldown and post-click cooldown work together to prevent accidental
 flower spam while keeping the interaction feeling responsive and natural.
 
 
-# 🎮 Interaction Instructions
-
-## How to Experience the Artwork
-
-1. Open the sketch.
-2. Enable brower's microphone input.
-3. Observe life cycle of tree throughout the day.
-4. Toggle on and off background audio through indicating button.
-5. Hover mouse over tree branches to grow additional flowers.
-6. Click on flowers to turn them into falling petals.
-7. Observe petals drifting naturally in the wind.
-8. Use background sfx and/or mic input (user's vocals, music, claps, etc) to "re-animate" fallen leaves and petals.
-9. Press SPACE to regenerate new tree and restart experience.
-
----
 
 # 👥 Mechanic Ownership
 
@@ -192,7 +178,8 @@ flower spam while keeping the interaction feeling responsive and natural.
 | -----------        | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | Fabiana Fonseca    | Audio                     |  SFX to increase user immersion and mic input used to reanimate fallen petals and leaves.                                                                                                                    |
 | Jiayi Hou          | Time-Based Events         |  Time-based system controlling the day-night background cycle, sun and moon movement, deltaTime tree growth, and 5-second no-hover auto-blooming.                                                                                                                   |
-| Chunyu Zhao        | Perlin Noise & Randomness |                                                                                                                       |
+| Chunyu Zhao        | Perlin Noise & Randomness |    Randomness and Perlin Noise were used to procedurally generate natural tree growth, flower blooming, leaf distribution, and wind-driven petal and leaf movement         
+
 | Guanghan Li        | User Input                |  Mouse hover to bloom flowers on branches, click flowers to release petals, space bar to regenerate the tree.         |
 
 ---
@@ -212,9 +199,9 @@ ChatGPT was used to help refine the written explanation of the time-based mechan
 **Perlin Noise & Randomness** - _Chunyu Zhao_
 
 
+
 **User Input** - _Guanghan Li_
 
-Claude was used to help debug script load order conflicts and refine the hover and click interaction logic in inputMechanic.js. The final implementation, including branch proximity detection using dist() and cooldown timers using millis(), was manually reviewed and integrated into the project.
 
 
 ---
@@ -253,7 +240,10 @@ Used as visual inspiration for the sun and moon elements in the time-based mecha
 ---
 ## Perlin noise and randomness
 
----
+Source:
+https://uk.pinterest.com/pin/11329436558222117/
+
+By watching the video, I observed how the flowers fall; flowers falling naturally exhibit randomness in both their velocity trajectories and rotation angles.
 
 ## User input
 
@@ -283,9 +273,6 @@ project-folder
 │   ├── StartingChime.mp3
 │   ├── storegraphic-soft-wind-316392.mp3
 │   ├── falling-flower-reference.jpg
-│   ├── movementInspo1.GIF
-│   ├── movementInspo2.gif
-│   ├── movementInspo3.GIF
 │   ├── StyleInspo.png
 │   ├── Time-Based.png
 │   └── tree-reference.png
@@ -319,7 +306,7 @@ project-folder
 
 ## Video Documentation
 
-(Add YouTube or Vimeo link here)
+[(Add YouTube or Vimeo link here)](https://youtu.be/suRB2padj-w)
 
 ---
 
