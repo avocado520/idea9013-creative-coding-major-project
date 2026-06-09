@@ -170,8 +170,8 @@ function getRandomAttachedLeaves() {
   for (let i = 0; i < leafCount; i++) {
     leaves.push({
       // Random offsets spread leaves around the branch tip instead of stacking them together.
-      offsetX: random(-12, 12),
-      offsetY: random(-10, 8),
+      offsetX: random(-11, 11),
+      offsetY: random(-10, 10),
 
       // Random angle gives each leaf a different direction.
       angle: random(-0.8, 0.8),

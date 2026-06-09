@@ -339,9 +339,12 @@ class Branch {
         if (!leaf.hasFallen) {
           push();
 
+          let attachX = this.x + sin(this.angle) * this.length * this.growth * 0.85;
+          let attachY = this.y + cos(this.angle) * this.length * this.growth * 0.85;
+
           translate(
-            currentEndX + leaf.offsetX * leafProgress,
-            currentEndY + leaf.offsetY * leafProgress
+            attachX + leaf.offsetX * 0.35 * leafProgress,
+            attachY + leaf.offsetY * 0.35 * leafProgress
           );
 
           rotate(-this.angle + leaf.angle);
