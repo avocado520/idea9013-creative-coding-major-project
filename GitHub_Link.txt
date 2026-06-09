@@ -1,0 +1,5 @@
+GitHub Repository Link:
+https://github.com/avocado520/idea9013-creative-coding-major-project.git
+
+Note:
+This repository contains the full project code, README, assets, and commit history.
