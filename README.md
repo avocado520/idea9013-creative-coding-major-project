@@ -5,12 +5,10 @@
 ---
 
 # 📖 Inspiration
-
-
-
-
-
----
+Our project was inspired by the trees that surround us in Sydney, particularly those around Victoria Park near the University of Sydney. As international students, we spend a lot of time walking through these green spaces, and the large, spreading trees have become a familiar part of our daily experience. They represent both the natural environment of Sydney and the sense of growth that comes with adapting to a new place.
+The concept did not begin as a tree simulation. During the development process, we explored different ideas and visual directions, but gradually realised that plant growth provided a natural framework for incorporating multiple interactive mechanics. Trees offered opportunities to visualise gradual change, organic movement, user interaction, and audio-responsive behaviours within a single cohesive system.
+We were particularly inspired by the way real trees change over time: branches grow unpredictably, flowers bloom, leaves emerge and eventually fall. These natural processes influenced our use of procedural generation, Perlin noise, randomness, timed growth, and interactive blooming. Rather than recreating a specific species, we aimed to capture the feeling of observing a living tree evolving through the seasons.
+The final project combines these observations with generative art techniques, creating a digital tree that grows, blooms, sheds leaves, and responds to user interaction and sound. Through this process, we transformed an everyday element of our environment into an interactive experience.
 
 ## Visual References
 
