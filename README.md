@@ -235,27 +235,32 @@ project-folder
 │
 ├── index.html
 ├── sketch.js
+├── style.css
+├── jsconfig.json
+├── .gitignore
 │
-├── tree/
-│   ├── tree.js
-│   ├── branch.js
-│
-├── flowers/
-│   ├── flower.js
-│   ├── petal.js
-│
-├── leaves/
-│   ├── leaf.js
-│
-├── audio/
-│   ├── audioMechanic.js
-│   ├── environmentalSFX.js
+├── tree.js
+├── flower.js
+├── petal.js
+├── inputMechanic.js
+├── timeMechanic.js
+├── audioMechanic.js
+├── environmentSFX.js
+├── perlin-randomness.js
 │
 ├── assets/
 │   ├── StartingChime.mp3
 │   ├── storegraphic-soft-wind-316392.mp3
+│   ├── falling-flower-reference.jpg
+│   ├── StyleInspo.png
+│   ├── Time-Based.png
+│   └── tree-reference.png
 │
-└── README.md
+├── libraries/
+│   └── p5.js related libraries
+│
+├── README.md
+└── READMEOLD.md
 ```
 
 ---
