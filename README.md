@@ -26,7 +26,7 @@
 Audio Input is broken into two main subcategories: **environmental sound effects** (controlled by environmentSFX.js) and **microphone-driven interaction** (controlled by audioMechanic.js)
 
 * **Environmental Sound Effects**
-    _ _Keeping in mind that certain browers require user input in order to begin audio playback, the inital tree growth does not automatically have sound effects, users must click "play backgound audio" or the spacebar to trigger playback_ _ 
+    _Keeping in mind that certain browers require user input in order to begin audio playback, the inital tree growth does not automatically have sound effects, users must click "play backgound audio" or the spacebar to trigger playback_
     - Background environmental sound effects of rustling leaves increase the immersion and realism of the piece
     - Users can toggle on and off the rustling audio through a button that changes indicating text based on toggle 
     - A starting chime triggered on a spacebar click provides context for the restart and regeneration of the piece which then automatically leads into looping rustle sfx
