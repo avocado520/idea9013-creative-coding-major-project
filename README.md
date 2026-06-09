@@ -208,7 +208,7 @@ ChatGPT was used to assist with translating portions of the original Processing 
 
 
 **User Input** - _Guanghan Li_
-
+Claude was used to help debug script load order conflicts and refine the hover and click interaction logic in inputMechanic.js. The final implementation, including branch proximity detection using dist() and cooldown timers using millis(), was manually reviewed and integrated into the project.
 
 
 ---
@@ -254,7 +254,11 @@ By watching the video, I observed how the flowers fall; flowers falling naturall
 
 ## User input
 
----
+Source:
+https://p5js.org/reference/p5/mouseMoved/         p5.js `mouseMoved()` reference was used to understand how to detect continuous mouse movement for hover interaction
+https://p5js.org/reference/p5/dist/               p5.js `dist()` reference was used to implement proximity detection between the mouse and branch positions
+
+---   
 
 # 📂 Project Structure
 
