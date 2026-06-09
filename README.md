@@ -1,6 +1,6 @@
 # 🌳 Living Seasons Tree
 
-
+Original artwork design by Fabiana Fonseca, Jiayi Hou, Chunyu Zhao, and Guanghan Li
 
 ---
 
