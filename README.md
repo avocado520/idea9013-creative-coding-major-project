@@ -198,6 +198,7 @@ ChatGPT was used to help refine the written explanation of the time-based mechan
 
 **Perlin Noise & Randomness** - _Chunyu Zhao_
 
+ChatGPT was used to assist with translating portions of the original Processing (Java) tree-generation code into p5.js syntax, helping identify equivalent functions, variable structures, and object-oriented implementations. AI was also used throughout development to diagnose integration issues and resolve bugs when combining independently developed modules into the final project.
 
 
 **User Input** - _Guanghan Li_
@@ -306,7 +307,6 @@ project-folder
 
 ## Video Documentation
 
-[(Add YouTube or Vimeo link here)](https://youtu.be/suRB2padj-w)
+[![9013 Creative Coding – Final Assessment](https://img.youtube.com/vi/suRB2padj-w/hqdefault.jpg)](https://youtu.be/suRB2padj-w)
 
----
 
