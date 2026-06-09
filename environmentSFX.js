@@ -47,6 +47,11 @@ function SFXToggle(){
 
 }
 
+/* -- AI ASSISTANCE -- 
+  Used Copilot within VSC to refine/debug playback button toggle
+  - FF
+  */
+
 function toggleAudio() {
     //No Audio - Button reads "Play" and on click resumes rustle sfx only
     if (!isAudioPaused && rustleSFX.isPlaying) {

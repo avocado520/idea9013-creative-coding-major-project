@@ -475,8 +475,14 @@ class FallingPetal {
     this.alpha = petalData.alpha;
   }
 
+  /* -- AI ASSISTANCE -- 
+  Used Copilot within VSC to help smoothly connect rectangle height movement
+  to the corresponding class instances of fallingPetals 
+  - FF
+  */
+
   update() {
-    // If petal already on the ground, follow the nearest audio rectangle y (if available)
+    // If petal is on the ground, they match the nearest corresponding audio rectangle's y position
     if (this.onGround) {
       if (typeof audioRects !== 'undefined' && audioRects.length > 0) {
         // find nearest audio rect by center-x distance
@@ -492,7 +498,7 @@ class FallingPetal {
           }
         }
 
-        // Smoothly move toward the rectangle's y (match top of rect)
+        // Smoothly move into position
         this.y = lerp(this.y, nearest.y, 0.18);
         this.angle += this.rotateSpeed * 0.3;
       }
@@ -588,8 +594,14 @@ class FallingLeaf {
     this.onGround = false;
   }
 
+  /* -- AI ASSISTANCE -- 
+  Used Copilot within VSC to help smoothly connect rectangle height movement
+  to the corresponding class instances of fallingLeaves 
+  - FF
+  */
+
   update() {
-    // If leaf already on the ground, follow the nearest audio rectangle y (if available)
+    // If leaf is on the ground, they match the nearest corresponding audio rectangle's y position
     if (this.onGround) {
       if (typeof audioOutlineRects !== 'undefined' && audioOutlineRects.length > 0) {
         // find nearest audio rect by center-x distance
@@ -603,7 +615,7 @@ class FallingLeaf {
           }
         }
 
-        // Smoothly move toward the rectangle's y (match top of rect)
+        // Smoothly move into position
         this.y = lerp(this.y, nearest.y, 0.18);
         this.angle += this.rotateSpeed * 0.3;
       }

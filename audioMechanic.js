@@ -2,6 +2,12 @@
 let numBins = 64;
 let smoothing = 0.9;
 
+/* -- AI ASSISTANCE -- 
+Used Copilot within VSC to help smoothly connect rectangle height movement
+to the corresponding class instances of fallingPetals and fallingLeaves
+- FF
+*/
+
 // Petal FFT Height Array
 let audioRects = [];
 
