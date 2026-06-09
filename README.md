@@ -41,25 +41,34 @@ Audio Input is broken into two main subcategories: **environmental sound effects
 
 ## Time-based
 
-The time-based mechanic controls how the scene changes over time.
+This mechanic focuses on p5.js timing and animation techniques used to control changes over time, including the day-night cycle, tree growth, sun and moon movement, and passive auto-blooming.
 
-Applications include:
+- **`millis()` for elapsed time**  
+  `millis()` is used to track how much time has passed since the scene started. This creates the base timing system for the day-night cycle and no-hover auto-blooming.
 
-* Day-night background colour cycle
-* Smooth transitions using `lerpColor()`
-* Tree growth controlled by `deltaTime`
-* 5-second no-hover auto-blooming
-* Connection with user input mechanic: hover interaction resets the auto-bloom timer
-* Sun and moon movement based on cycle progress
-* Time reset when the scene restarts
+- **Modulo for a repeating cycle**  
+  The elapsed time is repeated using modulo, so the day-night cycle can continue looping instead of stopping after one full cycle.
 
----
+- **`map()` and `lerpColor()` for background transitions**  
+  `map()` converts the cycle progress into smaller stage values, while `lerpColor()` blends between morning, daytime, sunset, dusk, and night colours.
 
-This mechanic uses `millis()` to track elapsed time. The background, tree growth, passive blooming, and sky objects all follow the same timing system.
+- **`constrain()` for safe progress values**  
+  `constrain()` is used to keep movement and growth values within controlled ranges, preventing unexpected jumps.
 
-The input mechanic detects when the user hovers near the tree. The time mechanic records that interaction time and waits 5 seconds before triggering passive blooming.
+- **`deltaTime` for tree growth**  
+  `deltaTime` controls the tree growth speed based on real elapsed time rather than frame count. This helps the animation remain more consistent across different devices.
 
-This helps the artwork feel like a living cycle rather than a static tree animation.
+- **Sun and moon timing**  
+  `isSunVisible()`, `isMoonVisible()`, `getSunProgress()`, and `getMoonProgress()` use the cycle progress to decide when the sun and moon appear and how far they move across the sky.
+
+- **`lerp()` and easing for sky movement**  
+  `lerp()` is used in `sketch.js` to calculate the sun and moon positions. An easing function makes the movement smoother and less mechanical.
+
+- **Transparency and layered circles for sky objects**  
+  The sun and moon are manually drawn using layered `circle()` shapes and alpha values in `fill()`. This creates soft glow effects and supports the visual atmosphere of the day-night cycle.
+
+- **5-second no-hover auto-blooming**  
+  The time mechanic records the latest hover time. If there is no hover interaction for 5 seconds, the tree automatically blooms a flower on a random available branch.
 
 ---
 
@@ -219,6 +228,12 @@ Used as inspiration for different audio reactive movement techniques that could 
 
 ## Time-based
 
+Source:  
+https://au.pinterest.com/pin/1120129738552090148/  
+https://au.pinterest.com/pin/7459155630697561/  
+https://au.pinterest.com/pin/416020084353622444/
+
+Used as visual inspiration for the sun and moon elements in the time-based mechanic. The final sun and moon were manually designed in p5.js using layered circles, transparency, and movement based on the day-night cycle.
 
 ---
 ## Perlin noise and randomness
