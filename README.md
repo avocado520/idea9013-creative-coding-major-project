@@ -147,9 +147,10 @@ flower spam while keeping the interaction feeling responsive and natural.
 # 🤖 AI Acknowledgement
 
 **Audio** - _Fabiana Fonseca_
-Used Copilot within VSC to help smoothly connect rectangle height movement
-to the corresponding class instances of fallingPetals and fallingLeaves, as 
-well as to refine/debug playback button toggle.
+
+Used Copilot within VSC to help smoothly connect rectangle height movement to the corresponding class instances of fallingPetals and fallingLeaves, as well as to refine/debug playback button toggle.
+
+Code works by pushing arrays from fft rectangles that then get referenced by xposition within class instances to gradually match the height of corresponding fft rectangles (using lerp movement). 
 
 **Time-Based** - _Jiayi Hou_
 
@@ -181,7 +182,7 @@ https://www.youtube.com/watch?v=uk96O7N1Yo0
 https://www.youtube.com/watch?v=2O3nm0Nvbi4
 https://edstem.org/au/courses/31325/lessons/98500/slides/672004
 
-Used as inspiration for audio reactive movement that could then by adapted by the falling petal and leaf instances.
+Used as inspiration for different audio reactive movement techniques that could then by adapted by the falling petal and leaf instances.
 
 ---
 

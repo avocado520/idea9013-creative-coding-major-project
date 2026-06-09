@@ -25,6 +25,8 @@ function micAudio(){
 
     noFill();
     noStroke();
+
+    //rectangle code sourced from tutorials Wk 12
     
     // --- PETAL FFT HEIGHT ---
 
