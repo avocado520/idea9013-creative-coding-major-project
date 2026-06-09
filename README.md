@@ -171,6 +171,10 @@ A bloom cooldown and post-click cooldown work together to prevent accidental
 flower spam while keeping the interaction feeling responsive and natural.
 
 
+<<<<<<< Updated upstream
+=======
+---
+>>>>>>> Stashed changes
 
 # 👥 Mechanic Ownership
 
@@ -178,8 +182,10 @@ flower spam while keeping the interaction feeling responsive and natural.
 | -----------        | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | Fabiana Fonseca    | Audio                     |  SFX to increase user immersion and mic input used to reanimate fallen petals and leaves.                                                                                                                    |
 | Jiayi Hou          | Time-Based Events         |  Time-based system controlling the day-night background cycle, sun and moon movement, deltaTime tree growth, and 5-second no-hover auto-blooming.                                                                                                                   |
+<<<<<<< Updated upstream
 | Chunyu Zhao        | Perlin Noise & Randomness |    Randomness and Perlin Noise were used to procedurally generate natural tree growth, flower blooming, leaf distribution, and wind-driven petal and leaf movement         
 
+>>>>>>> Stashed changes
 | Guanghan Li        | User Input                |  Mouse hover to bloom flowers on branches, click flowers to release petals, space bar to regenerate the tree.         |
 
 ---
@@ -287,25 +293,33 @@ project-folder
 
 ---
 
-# 🎥 Interaction Instructions
+# 🎮 Interaction Instructions
 
 ## User Instructions
 
-1. **Wait for the tree to grow** — the tree will slowly grow from the ground up on its own.
+1. **Open sketch** — and enable mic input.
 
-2. **Move your mouse over the branches** — flowers will bloom near your cursor as you hover over the tree.
+2. **Watch life cycle of tree** — the tree will slowly grow from the ground up on its own.
 
-3. **Click on a flower** — the flower will break apart into falling petals.
+3. **Move your mouse over the branches** — flowers will bloom near your cursor as you hover over the tree.
 
-4. **Press Space** — regenerates a brand new randomly shaped tree and resets the background cycle.
+4. **Click on a flower** — the flower will break apart into falling petals.
 
-5. **Click "Play Background Audio"** or **press Space** to start the ambient rustling sound effects.
+5. **Click "Play Background Audio" Button** - toggle the ambient rustling sound effects.
 
-6. **Make some noise** — speak or play music near your microphone and watch the fallen petals and leaves bounce in response to the sound.
+6. **Make some noise** — speak or play music near your microphone and watch the fallen petals and leaves bounce in response to the sound (_Note: Unless toggled off, microphone input will combine with background audio. Toggle off SFX for a more dramatic response to user noise_).
 
-7. **Wait and watch** — if you stop interacting, the tree will slowly continue blooming on its own every 5 seconds. The background also gradually shifts through a full day-night cycle.
+7. **Press Space** — with a indicitive chime, regenerate a brand new randomly shaped tree, reset the background cycle, and clear all petals and leaves.
+
+8. **Wait and watch** — if you stop interacting, the tree will slowly continue blooming on its own every 5 seconds. The background also gradually shifts through a full day-night cycle.
 
 ## Video Documentation
 
+<<<<<<< Updated upstream
 [9013 Creative Coding – Final Assessment(Backup)](https://youtu.be/suRB2padj-w)
+=======
+Clink link here to see demo recording of piece
+
+---
+>>>>>>> Stashed changes
 
