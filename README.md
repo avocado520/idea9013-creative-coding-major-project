@@ -65,27 +65,59 @@ This helps the artwork feel like a living cycle rather than a static tree animat
 
 ## Perlin noise and randomness
 
-Perlin noise is used to simulate natural movement.
+Randomness and Perlin Noise are used to create the organic growth, natural variation, and wind-driven movement of the tree system. 
 
-Applications include:
+* **Tree Branch Randomness**
+  *The tree was designed to grow like a natural organism rather than a perfectly symmetrical structure. To achieve this, branch angles and branch lengths are procedurally varied during the recursive tree generation process.*
 
-* Wind movement
-* Petal drifting
-* Leaf swaying
+  * `getRandomBranchAngles(depth)` controls how each branch splits based on its depth in the tree structure.
+  * Larger branches use smaller angle variations so the main tree form grows more steadily and does not become too chaotic.
+  * Smaller branches use wider angle variations, allowing the upper canopy to spread out with more detail.
+  * `getRandomLeftBranchLength()` and `getRandomRightBranchLength()` give the two child branches different length ratios, preventing the tree from looking mirrored or mechanically repeated.
+  * This randomness supports the intended visual effect of a tree shaped by natural growth, where each branch feels related to the whole structure but not perfectly identical.
 
-This creates smoother and more organic motion than purely random movement.
+* **Flower Bloom Randomness**
+  *Flowers are intended to appear as part of the tree’s natural blooming process rather than as repeated decorations placed evenly across the canopy.*
 
----
+  * `getRandomFlowerData()` gives each flower a slightly different size, rotation angle, position offset, and bloom timing.
+  * `flowerOffsetX` and `flowerOffsetY` move flowers around branch tips so they cluster naturally instead of appearing in rigid positions.
+  * `flowerAngle` rotates each flower so the blossoms do not all face the same direction.
+  * `petalTimer` delays flower-related petal behaviour, making the blooming and falling process feel staggered rather than simultaneous.
+  * `getRandomFallingFlowerSize()` also gives falling flowers different scales, helping the falling elements feel more varied and natural.
 
-Random values are used for:
+* **Leaf Generation and Falling Randomness**
+  *Leaves are used to build the density of the canopy and later support the seasonal transition where some leaves fall while others remain attached.*
 
-* Branch variation
-* Flower placement
-* Leaf placement
-* Petal rotation
-* Growth differences
+  * `getRandomAttachedLeaves()` creates a random number of leaves on each terminal branch using `leafCount = int(random(8, 14))`.
+  * Each attached leaf receives a random position offset, rotation angle, and size, which helps the canopy look fuller and less repetitive.
+  * `shouldFall: random(1) < 0.45` gives each leaf a probability of falling, meaning only some leaves are selected for the seasonal falling behaviour.
+  * This creates a more believable transition because the tree does not lose all leaves at the same time or in the same way.
+  * `getRandomLeafData()` controls the movement properties of falling leaves, including falling speed, horizontal speed, rotation speed, and noise offset.
 
-This ensures every generated tree is unique.
+* **Petal Falling Randomness**
+  *The petal falling system was designed to create a soft, scattered, wind-blown atmosphere after flowers appear on the tree.*
+
+  * `getRandomPetalData()` assigns each petal a different size, falling speed, horizontal speed, starting angle, rotation speed, colour, transparency, and movement type.
+  * `type: int(random(4))` allows petals to use different falling behaviours, so they do not all move in the same pattern.
+  * Random colour values create subtle variation within the pink petal palette, making the petals look more organic.
+  * `resetPetalRandomData(petal)` allows a reused petal to receive a new set of random properties, so repeated falling cycles still feel visually fresh.
+  * This supports the intended effect of petals drifting unpredictably, like they are being carried by changing air currents.
+
+* **Perlin Noise Wind Movement**
+  *Perlin Noise is used because the falling petals and leaves need to move like they are affected by wind, not like they are randomly shaking.*
+
+  * `getSoftNoiseDrift(noiseOffset)` maps `noise()` values into a smooth horizontal drift range from `-1` to `1`.
+  * `getSmallNoiseDrift(noiseOffset)` creates a smaller drift range from `-0.7` to `0.7`, which is useful for more subtle movement.
+  * `updateFastNoiseOffset()` and `updateSlowNoiseOffset()` control how quickly the noise value changes over time.
+  * Faster noise updates can create more active drifting movement, while slower updates create gentler background motion.
+  * This produces smoother and more believable movement than pure `random()`, because Perlin Noise changes gradually instead of jumping suddenly between values.
+
+* **Random Start Positions**
+  *Random starting positions are used to make falling elements enter the scene from different places instead of appearing from one fixed point.*
+
+  * `getRandomCanvasX()` gives falling petals or leaves a random horizontal position across the canvas.
+  * `getRandomStartY()` starts falling elements slightly above the visible canvas, making them enter the scene naturally from the top.
+  * This helps extend the falling effect across the whole screen and supports the feeling of a larger environment beyond the visible canvas.
 
 ---
 
