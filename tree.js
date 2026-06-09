@@ -1,22 +1,9 @@
-/*
-----------------------------------------------------
-Changes:
-- Reduced excessive randomness in branch generation
-- Introduced depth-based branching structure
-- Increased tree height while keeping the root position fixed
-- Created a more layered and natural canopy
-- Balanced crown density for future interaction design
-----------------------------------------------------
-*/
-
-// tree.js
 // This file contains the tree generation logic and the Branch class.
 // It does not contain setup(), draw(), keyPressed(), or windowResized().
 // Those p5.js lifecycle functions are kept in sketch.js.
 
 // Tree boundary values are used when generating a new tree.
 // They help measure the generated tree size so it can be scaled into the canvas.
-// tree.js
 
 let minX, maxX, minY, maxY;
 
