@@ -11,7 +11,7 @@ We were particularly inspired by the way real trees change over time: branches g
 The final project combines these observations with generative art techniques, creating a digital tree that grows, blooms, sheds leaves, and responds to user interaction and sound. Through this process, we transformed an everyday element of our environment into an interactive experience.
 
 ## Visual References
-Our visual style combines organic growth, vibrant seasonal colors, and natural motion. The tree serves as the central structure, while flowers and petals introduce contrast, softness, and visual richness. 
+Our visual style combines organic growth, vibrant seasonal colors, and natural motion. The tree serves as the central structure, while flowers and petals introduce contrast, softness, and visual richness. The introduction of audio, both in sound effects and input, bring a sense of play and whimsy reminiscent of childhood.
 
 ### Generative Tree Reference
 
@@ -23,11 +23,10 @@ Inspired by the OpenProcessing Tree Project, we adopt a procedural tree structur
 Inspired by falling flower animations, we use softly drifting petals that rotate, sway, and descend naturally through space. The movement emphasizes lightness, fragility, and the temporary nature of blooming flowers.
 ![Flower Inspiration](assets/falling-flower-reference.jpg)
 
-### Audio Part
+### Petal and Leaf Audio Reactive Movement
 
-
-
-
+We were inspired by the playfulness of bouncing motion. The movement in the piece thus far is very organic and natural, but the audio mic input brings in a level of gamification that lends itself well to the whimsy of bouncing motion.
+![Motion Reference 1](assets/movementInspo1.GIF) ![Motion Reference 2](assets/movementInspo2.gif) ![Motion Reference 3](assets/movementInspo3.GIF) 
 
 
 ---
@@ -39,7 +38,7 @@ Inspired by falling flower animations, we use softly drifting petals that rotate
 Audio Input is broken into two main subcategories: **environmental sound effects** (controlled by environmentSFX.js) and **microphone-driven interaction** (controlled by audioMechanic.js)
 
 * **Environmental Sound Effects**
-    _Keeping in mind that certain browers require user input in order to begin audio playback, the inital tree growth does not automatically have sound effects, users must click "play backgound audio" or the spacebar to trigger playback_
+    _Keeping in mind that certain browsers require user input in order to begin audio playback, the initial tree growth does not automatically have sound effects, users must click "play backgound audio" or the spacebar to trigger playback_
     - Background environmental sound effects of rustling leaves increase the immersion and realism of the piece
     - Users can toggle on and off the rustling audio through a button that changes indicating text based on toggle 
     - A starting chime triggered on a spacebar click provides context for the restart and regeneration of the piece which then automatically leads into looping rustle sfx
@@ -170,22 +169,13 @@ Applications include:
 A bloom cooldown and post-click cooldown work together to prevent accidental
 flower spam while keeping the interaction feeling responsive and natural.
 
-
-<<<<<<< Updated upstream
-=======
----
->>>>>>> Stashed changes
-
 # 👥 Mechanic Ownership
 
 | Team Member        | Mechanic                  | Description                                                                                                           |
 | -----------        | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | Fabiana Fonseca    | Audio                     |  SFX to increase user immersion and mic input used to reanimate fallen petals and leaves.                                                                                                                    |
 | Jiayi Hou          | Time-Based Events         |  Time-based system controlling the day-night background cycle, sun and moon movement, deltaTime tree growth, and 5-second no-hover auto-blooming.                                                                                                                   |
-<<<<<<< Updated upstream
-| Chunyu Zhao        | Perlin Noise & Randomness |    Randomness and Perlin Noise were used to procedurally generate natural tree growth, flower blooming, leaf distribution, and wind-driven petal and leaf movement         
-
->>>>>>> Stashed changes
+| Chunyu Zhao        | Perlin Noise & Randomness |  Procedurally generate natural tree growth, flower blooming, leaf distribution, and wind-driven petal and leaf movement.                                                                                                                    |
 | Guanghan Li        | User Input                |  Mouse hover to bloom flowers on branches, click flowers to release petals, space bar to regenerate the tree.         |
 
 ---
@@ -196,7 +186,7 @@ flower spam while keeping the interaction feeling responsive and natural.
 
 Used Copilot within VSC to help smoothly connect rectangle height movement to the corresponding class instances of fallingPetals and fallingLeaves, as well as to refine/debug playback button toggle.
 
-Code works by pushing arrays from fft rectangles that then get referenced by xposition within class instances to gradually match the height of corresponding fft rectangles (using lerp movement). 
+Code works by pushing arrays from fft rectangles that then get referenced by x-position within class instances to gradually match the height of corresponding fft rectangles (using lerp movement). 
 
 **Time-Based** - _Jiayi Hou_
 
@@ -210,7 +200,6 @@ ChatGPT was used to assist with translating portions of the original Processing 
 **User Input** - _Guanghan Li_
 
 Claude was used to help debug script load order conflicts and refine the hover and click interaction logic in inputMechanic.js. The final implementation, including branch proximity detection using dist() and cooldown timers using millis(), was manually reviewed and integrated into the project.
-
 
 ---
 
@@ -285,6 +274,9 @@ project-folder
 │   ├── StartingChime.mp3
 │   ├── storegraphic-soft-wind-316392.mp3
 │   ├── falling-flower-reference.jpg
+│   ├── movementInspo1.GIF
+│   ├── movementInspo2.gif
+│   ├── movementInspo3.GIF
 │   ├── StyleInspo.png
 │   ├── Time-Based.png
 │   └── tree-reference.png
@@ -314,17 +306,10 @@ project-folder
 
 6. **Make some noise** — speak or play music near your microphone and watch the fallen petals and leaves bounce in response to the sound (_Note: Unless toggled off, microphone input will combine with background audio. Toggle off SFX for a more dramatic response to user noise_).
 
-7. **Press Space** — with a indicitive chime, regenerate a brand new randomly shaped tree, reset the background cycle, and clear all petals and leaves.
+7. **Press Space** — with a indicative chime, regenerate a brand new randomly shaped tree, reset the background cycle, and clear all petals and leaves.
 
 8. **Wait and watch** — if you stop interacting, the tree will slowly continue blooming on its own every 5 seconds. The background also gradually shifts through a full day-night cycle.
 
 ## Video Documentation
 
-<<<<<<< Updated upstream
 [9013 Creative Coding – Final Assessment(Backup)](https://youtu.be/suRB2padj-w)
-=======
-Clink link here to see demo recording of piece
-
----
->>>>>>> Stashed changes
-
