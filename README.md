@@ -307,6 +307,5 @@ project-folder
 
 ## Video Documentation
 
-[![9013 Creative Coding – Final Assessment](https://img.youtube.com/vi/suRB2padj-w/hqdefault.jpg)](https://youtu.be/suRB2padj-w)
-
+[9013 Creative Coding – Final Assessment(Backup)](https://youtu.be/suRB2padj-w)
 
